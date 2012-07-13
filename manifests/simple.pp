@@ -1,53 +1,77 @@
 # ex:ts=4 sw=4 tw=72
 
-class shorewall::simple (
-	$ip_iface  = 'eth0',
-	$ip6_iface = false,
-	$dynamic   = true,
-) inherits shorewall::base {
-	if !$ip_iface and !$ip6_iface {
-		fail("$::fqdn must specify either ip_iface or ip6_iface for shorewall::simple")
-	}
+class shorewall::simple inherits shorewall::base {
 
-	if $ip_iface {
-		# zones (just inet)
-		file { '/etc/shorewall/zones':
-			mode    => 0644,
-			content => "local firewall\ninet ipv4\n",
-			require => Package['shorewall'],
-		}
-		# interfaces (just one)
-		file { '/etc/shorewall/interfaces':
-			mode    => 0644,
-			content => inline_template("inet <%= ip_iface %> detect tcpflags,nosmurfs,routefilter<%= dynamic ? ',dhcp,optional' : '' %>\n"),
-			require => Package['shorewall'],
-		}
-		# policy (default DROP)
-		file { '/etc/shorewall/policy':
-			mode    => 0644,
-			content => "\$FW all ACCEPT\ninet all drop info\nall all REJECT info\n",
-			require => Package['shorewall'],
-		}
-		
-		# rules (composed)
-		file { '/etc/shorewall/rules':
-			mode    => 0644,
-			content => "Ping/ACCEPT all $FW\n",
-			require => Package['shorewall'],
-		}
-
-		# shorewall.conf
-		file { '/etc/shorewall/shorewall.conf':
-			ensure  => present,
-			require => Package['shorewall'],
+	define iface (
+		$proto   = 'ipv4',
+		$dynamic = false,
+	) {
+		concat::fragment { "shorewall-iface-${proto}-${name}":
+			order   => '50',
+			target  => $proto ? {
+				'ipv4' => '/etc/shorewall/interfaces',
+				'ipv6' => '/etc/shorewall6/interfaces',
+			},
+			content => inline_template("inet <%= name %> detect tcpflags,nosmurfs,routefilter<%= dynamic ? ',dhcp,optional' : '' %>\n"),
 		}
 	}
 
-	if $ip6_iface {
-		# zones (just inet)
-		# interfaces (just one)
-		# policy (default DROP)
-		# rules (composed)
-		# shorewall.conf
+	define open_port (
+		$proto,
+		$port,
+	) {
+		concat::fragment { "open_port-${proto}-${port}":
+			order   => '50',
+			target  => '/etc/shorewall/rules',
+			content => inline_template("ACCEPT inet \$FW ${proto} ${port}\n"),
+		}
 	}
+
+	file { '/etc/shorewall':
+		ensure  => directory,
+		require => Package['shorewall'],
+	}
+
+	# zones (just inet)
+	file { '/etc/shorewall/zones':
+		mode    => 0644,
+		content => "local firewall\ninet ipv4\n",
+		notify  => Exec['shorewall-reload'],
+	}
+
+	# interfaces (composed)
+	concat { '/etc/shorewall/interfaces':
+		mode    => 0644,
+		notify  => Exec['shorewall-reload'],
+	}
+	# policy (default DROP)
+	file { '/etc/shorewall/policy':
+		mode    => 0644,
+		content => "\$FW all ACCEPT\ninet all DROP info\nall all REJECT info\n",
+		notify  => Exec['shorewall-reload'],
+	}
+	
+	# rules (composed)
+	concat { '/etc/shorewall/rules':
+		mode    => 0644,
+		notify  => Exec['shorewall-reload'],
+	}
+
+	concat::fragment { 'shorewall-ping-rule':
+		order   => '00',
+		target  => '/etc/shorewall/rules',
+		content => "Ping/ACCEPT all \$FW\n",
+	}
+
+	# shorewall.conf
+	file { '/etc/shorewall/shorewall.conf':
+		ensure  => present,
+		notify  => Exec['shorewall-reload'],
+	}
+
+	exec { 'shorewall-reload':
+		command     => '/etc/init.d/shorewall restart',
+		refreshonly => true,
+	}
+
 }
