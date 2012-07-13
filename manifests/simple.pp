@@ -40,26 +40,51 @@ class shorewall::simple inherits shorewall::base {
 		require => Package['shorewall'],
 	}
 
-	# zones (just inet)
+	file { '/etc/shorewall6':
+		ensure  => directory,
+		require => Package['shorewall6'],
+	}
+
+	# ip4 zones (just inet)
 	file { '/etc/shorewall/zones':
 		mode    => 0644,
 		content => "local firewall\ninet ipv4\n",
 		notify  => Exec['shorewall-reload'],
 	}
+	# ip6 zones (just inet)
+	file { '/etc/shorewall6/zones':
+		mode    => 0644,
+		content => "local firewall\ninet ipv4\n",
+		notify  => Exec['shorewall6-reload'],
+	}
 
-	# interfaces (composed)
+	# ip4 interfaces (composed)
 	concat { '/etc/shorewall/interfaces':
 		mode    => 0644,
 		notify  => Exec['shorewall-reload'],
 	}
-	# policy (default DROP)
+
+	# ip6 interfaces (composed)
+	concat { '/etc/shorewall6/interfaces':
+		mode    => 0644,
+		notify  => Exec['shorewall6-reload'],
+	}
+
+	# ip4 policy (default DROP)
 	file { '/etc/shorewall/policy':
 		mode    => 0644,
 		content => "\$FW all ACCEPT\ninet all DROP info\nall all REJECT info\n",
 		notify  => Exec['shorewall-reload'],
 	}
 	
-	# rules (composed)
+	# ip6 policy (default DROP)
+	file { '/etc/shorewall6/policy':
+		mode    => 0644,
+		content => "\$FW all ACCEPT\ninet all DROP info\nall all REJECT info\n",
+		notify  => Exec['shorewall6-reload'],
+	}
+	
+	# ip4 rules (composed)
 	concat { '/etc/shorewall/rules':
 		mode    => 0644,
 		notify  => Exec['shorewall-reload'],
@@ -71,14 +96,37 @@ class shorewall::simple inherits shorewall::base {
 		content => "Ping/ACCEPT all \$FW\n",
 	}
 
-	# shorewall.conf
+	# ip6 rules (composed)
+	concat { '/etc/shorewall6/rules':
+		mode    => 0644,
+		notify  => Exec['shorewall6-reload'],
+	}
+
+	concat::fragment { 'shorewall6-ping-rule':
+		order   => '00',
+		target  => '/etc/shorewall6/rules',
+		content => "Ping/ACCEPT all \$FW\n",
+	}
+
+	# ip4 shorewall.conf
 	file { '/etc/shorewall/shorewall.conf':
 		ensure  => present,
 		notify  => Exec['shorewall-reload'],
 	}
 
+	# ip6 shorewall.conf
+	file { '/etc/shorewall6/shorewall.conf':
+		ensure  => present,
+		notify  => Exec['shorewall6-reload'],
+	}
+
 	exec { 'shorewall-reload':
 		command     => '/etc/init.d/shorewall restart',
+		refreshonly => true,
+	}
+
+	exec { 'shorewall6-reload':
+		command     => '/etc/init.d/shorewall6 restart',
 		refreshonly => true,
 	}
 
