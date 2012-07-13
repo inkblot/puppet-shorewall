@@ -3,16 +3,24 @@
 class shorewall::simple inherits shorewall::base {
 
 	define iface (
-		$proto   = 'ipv4',
+		$ipv4    = true,
+		$ipv6    = false,
 		$dynamic = false,
 	) {
-		concat::fragment { "shorewall-iface-${proto}-${name}":
-			order   => '50',
-			target  => $proto ? {
-				'ipv4' => '/etc/shorewall/interfaces',
-				'ipv6' => '/etc/shorewall6/interfaces',
-			},
-			content => inline_template("inet <%= name %> detect tcpflags,nosmurfs,routefilter<%= dynamic ? ',dhcp,optional' : '' %>\n"),
+		if $ipv4 {
+			concat::fragment { "shorewall-iface-ipv4-${name}":
+				order   => '50',
+				target  => '/etc/shorewall/interfaces',
+				content => inline_template("inet <%= name %> detect tcpflags,nosmurfs,routefilter<%= dynamic ? ',dhcp,optional' : '' %>\n"),
+			}
+		}
+
+		if $ipv6 {
+			concat::fragment { "shorewall-iface-ipv6-${name}":
+				order   => '50',
+				target  => '/etc/shorewall6/interfaces',
+				content => inline_template("inet <%= name %> detect tcpflags,nosmurfs<%= dynamic ? ',dhcp,optional' : ''%>\n"),
+			}
 		}
 	}
 
