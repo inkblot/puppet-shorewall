@@ -6,9 +6,9 @@ class shorewall::simple (
 ) inherits shorewall::base {
 
 	define iface (
-		$ipv4 = $shorewall::simple::ipv4,
-		$ipv6 = $shorewall::simple::ipv6,
-		$dynamic  = false,
+		$ipv4    = $shorewall::simple::ipv4,
+		$ipv6    = $shorewall::simple::ipv6,
+		$dynamic = false,
 	) {
 		if $ipv4 {
 			concat::fragment { "shorewall-iface-ipv4-${name}":
