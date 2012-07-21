@@ -40,7 +40,7 @@ class shorewall::simple (
 			concat::fragment { "open_port-ipv4-${proto}-${port}":
 				order   => '50',
 				target  => '/etc/shorewall/rules',
-				content => inline_template("ACCEPT inet \$FW ${proto} ${port}\n"),
+				content => "ACCEPT inet \$FW ${proto} ${port}\n",
 			}
 		}
 
@@ -48,7 +48,7 @@ class shorewall::simple (
 			concat::fragment { "open_port-ipv6-${proto}-${port}":
 				order   => '50',
 				target  => '/etc/shorewall6/rules',
-				content => inline_template("ACCEPT inet \$FW ${proto} ${port}\n"),
+				content => "ACCEPT inet \$FW ${proto} ${port}\n",
 			}
 		}
 	}
