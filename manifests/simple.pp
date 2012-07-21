@@ -1,9 +1,14 @@
 # ex:ts=4 sw=4 tw=72
 
 class shorewall::simple (
-	$ipv4 = true,
-	$ipv6 = false,
-) inherits shorewall::base {
+	$ipv4 = $shorewall::params::ipv4,
+	$ipv6 = $shorewall::params::ipv6,
+) inherits shorewall::params {
+
+	class { 'shorewall::base':
+		ipv4 => $ipv4,
+		ipv6 => $ipv6,
+	}
 
 	define iface (
 		$ipv4    = $shorewall::simple::ipv4,
@@ -49,11 +54,6 @@ class shorewall::simple (
 	}
 
 	if $ipv4 {
-		file { '/etc/shorewall':
-			ensure  => directory,
-			require => Package['shorewall'],
-		}
-
 		# ip4 zones (just inet)
 		file { '/etc/shorewall/zones':
 			mode    => 0644,
@@ -93,11 +93,6 @@ class shorewall::simple (
 	}
 
 	if $ipv6 {
-		file { '/etc/shorewall6':
-			ensure  => directory,
-			require => Package['shorewall6'],
-		}
-
 		# ip6 zones (just inet)
 		file { '/etc/shorewall6/zones':
 			mode    => 0644,
