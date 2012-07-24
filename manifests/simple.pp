@@ -53,6 +53,27 @@ class shorewall::simple (
 		}
 	}
 
+	define tunnel (
+		$type,
+		$gateway = '0.0.0.0/0',
+	) {
+		if $shorewall::simple::ipv4 {
+			concat::fragment { 'tunnel-ipv4-${type}-${gateway}':
+				order   => '50',
+				target  => '/etc/shorewall/tunnels',
+				content => "${type} inet ${gateway}",
+			}
+		}
+
+		if $shorewall::simple::ipv6 {
+			concat::fragment { 'tunnel-ipv6-${type}-${gateway}':
+				order   => '50',
+				target  => '/etc/shorewall6/tunnels',
+				content => "${type} inet ${gateway}",
+			}
+		}
+	}
+
 	if $ipv4 {
 		# ip4 zones (just inet)
 		file { '/etc/shorewall/zones':
@@ -76,6 +97,12 @@ class shorewall::simple (
 	
 		# ip4 rules (composed)
 		concat { '/etc/shorewall/rules':
+			mode    => 0644,
+			notify  => Exec['shorewall-reload'],
+		}
+
+		# ipv4 tunnels (composed)
+		concat { '/etc/shorewall/tunnels':
 			mode    => 0644,
 			notify  => Exec['shorewall-reload'],
 		}
@@ -129,6 +156,12 @@ class shorewall::simple (
 			order   => '00',
 			target  => '/etc/shorewall6/rules',
 			content => "Ping/ACCEPT all \$FW\n",
+		}
+
+		# ipv6 tunnels (composed)
+		concat { '/etc/shorewall6/tunnels':
+			mode    => 0644,
+			notify  => Exec['shorewall6-reload'],
 		}
 
 		# ip6 shorewall.conf
