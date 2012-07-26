@@ -61,7 +61,7 @@ class shorewall::simple (
 			concat::fragment { 'tunnel-ipv4-${type}-${gateway}':
 				order   => '50',
 				target  => '/etc/shorewall/tunnels',
-				content => "${type} inet ${gateway}",
+				content => "${type} inet ${gateway}\n",
 			}
 		}
 
