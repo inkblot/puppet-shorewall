@@ -37,7 +37,7 @@ class shorewall::simple (
 		$port,
 	) {
 		if $shorewall::simple::ipv4 {
-			concat::fragment { "open_port-ipv4-${proto}-${port}":
+			concat::fragment { "port-ipv4-${proto}-${port}":
 				order   => '50',
 				target  => '/etc/shorewall/rules',
 				content => "ACCEPT inet \$FW ${proto} ${port}\n",
@@ -45,7 +45,7 @@ class shorewall::simple (
 		}
 
 		if $shorewall::simple::ipv6 {
-			concat::fragment { "open_port-ipv6-${proto}-${port}":
+			concat::fragment { "port-ipv6-${proto}-${port}":
 				order   => '50',
 				target  => '/etc/shorewall6/rules',
 				content => "ACCEPT inet \$FW ${proto} ${port}\n",
@@ -58,7 +58,7 @@ class shorewall::simple (
 		$gateway = '0.0.0.0/0',
 	) {
 		if $shorewall::simple::ipv4 {
-			concat::fragment { 'tunnel-ipv4-${type}-${gateway}':
+			concat::fragment { "tunnel-ipv4-${type}-${gateway}":
 				order   => '50',
 				target  => '/etc/shorewall/tunnels',
 				content => "${type} inet ${gateway}\n",
