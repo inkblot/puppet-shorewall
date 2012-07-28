@@ -55,6 +55,28 @@ class shorewall::multi (
 		}
 	}
 
+	define tunnel (
+		$type,
+		$zone,
+		$gateway = '0.0.0.0/0',
+	) {
+		if $shorewall::multi::ipv4 {
+			concat::fragment { "tunnel-ipv4-${type}-${gateway}":
+				order   => '50',
+				target  => '/etc/shorewall/tunnels',
+				content => "${type} ${zone} ${gateway}\n",
+			}
+		}
+
+		if $shorewall::multi::ipv6 {
+			concat::fragment { "tunnel-ipv6-${type}-${gateway}":
+				order   => '50',
+				target  => '/etc/shorewall6/tunnels',
+				content => "${type} ${zone} ${gateway}\n",
+			}
+		}
+	}
+
 	define zone (
 		$proto   = 'ipv4',
 		$type    = '',
@@ -127,6 +149,12 @@ class shorewall::multi (
 			notify  => Exec['shorewall-reload'],
 		}
 
+		# ipv4 tunnels (composed)
+		concat { '/etc/shorewall/tunnels':
+			mode    => 0644,
+			notify  => Exec['shorewall-reload'],
+		}
+
 		# ip4 shorewall.conf
 		file { '/etc/shorewall/shorewall.conf':
 			ensure  => present,
@@ -176,6 +204,12 @@ class shorewall::multi (
 			order   => '00',
 			target  => '/etc/shorewall6/rules',
 			content => "Ping/ACCEPT all \$FW\n",
+		}
+
+		# ipv6 tunnels (composed)
+		concat { '/etc/shorewall6/tunnels':
+			mode    => 0644,
+			notify  => Exec['shorewall6-reload'],
 		}
 
 		# ip6 shorewall.conf
