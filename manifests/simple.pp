@@ -1,13 +1,16 @@
 # ex:ts=4 sw=4 tw=72
 
 class shorewall::simple (
-	$ipv4 = $shorewall::params::ipv4,
-	$ipv6 = $shorewall::params::ipv6,
+	$ipv4    = $shorewall::params::ipv4,
+	$ipv6    = $shorewall::params::ipv6,
+	$inet    = 'inet',
+	$tunnels = false,
 ) inherits shorewall::params {
 
-	class { 'shorewall::base':
-		ipv4 => $ipv4,
-		ipv6 => $ipv6,
+	class { 'shorewall::multi':
+		ipv4    => $ipv4,
+		ipv6    => $ipv6,
+		tunnels => $tunnels,
 	}
 
 	define iface (
@@ -15,20 +18,11 @@ class shorewall::simple (
 		$ipv6    = $shorewall::simple::ipv6,
 		$dynamic = false,
 	) {
-		if $ipv4 {
-			concat::fragment { "shorewall-iface-ipv4-${name}":
-				order   => '50',
-				target  => '/etc/shorewall/interfaces',
-				content => inline_template("inet <%= name %> detect tcpflags,nosmurfs,routefilter<%= dynamic ? ',dhcp,optional' : '' %>\n"),
-			}
-		}
-
-		if $ipv6 {
-			concat::fragment { "shorewall-iface-ipv6-${name}":
-				order   => '50',
-				target  => '/etc/shorewall6/interfaces',
-				content => inline_template("inet <%= name %> detect tcpflags,nosmurfs<%= dynamic ? ',dhcp,optional' : ''%>\n"),
-			}
+		shorewall::multi::iface { $name:
+			ipv4    => $ipv4,
+			ipv6    => $ipv6,
+			dynamic => $dynamic,
+			zone    => $shorewall::simple::inet,
 		}
 	}
 
@@ -36,20 +30,10 @@ class shorewall::simple (
 		$proto,
 		$port,
 	) {
-		if $shorewall::simple::ipv4 {
-			concat::fragment { "port-ipv4-${proto}-${port}":
-				order   => '50',
-				target  => '/etc/shorewall/rules',
-				content => "ACCEPT inet \$FW ${proto} ${port}\n",
-			}
-		}
-
-		if $shorewall::simple::ipv6 {
-			concat::fragment { "port-ipv6-${proto}-${port}":
-				order   => '50',
-				target  => '/etc/shorewall6/rules',
-				content => "ACCEPT inet \$FW ${proto} ${port}\n",
-			}
+		shorewall::multi::port { $name:
+			proto  => $proto,
+			port   => $port,
+			source => $shorewall::simple::inet,
 		}
 	}
 
@@ -57,122 +41,24 @@ class shorewall::simple (
 		$type,
 		$gateway = '0.0.0.0/0',
 	) {
-		if $shorewall::simple::ipv4 {
-			concat::fragment { "tunnel-ipv4-${type}-${gateway}":
-				order   => '50',
-				target  => '/etc/shorewall/tunnels',
-				content => "${type} inet ${gateway}\n",
-			}
-		}
-
-		if $shorewall::simple::ipv6 {
-			concat::fragment { 'tunnel-ipv6-${type}-${gateway}':
-				order   => '50',
-				target  => '/etc/shorewall6/tunnels',
-				content => "${type} inet ${gateway}",
+		if $tunnels {
+			shorewall::multi::tunnel { $name:
+				type    => $type,
+				gateway => $gateway,
+				zone    => $shorewall::simple::inet,
 			}
 		}
 	}
 
 	if $ipv4 {
-		# ip4 zones (just inet)
-		file { '/etc/shorewall/zones':
-			mode    => 0644,
-			content => "local firewall\ninet ipv4\n",
-			notify  => Exec['shorewall-reload'],
-		}
-
-		# ip4 interfaces (composed)
-		concat { '/etc/shorewall/interfaces':
-			mode    => 0644,
-			notify  => Exec['shorewall-reload'],
-		}
-
-		# ip4 policy (default DROP)
-		file { '/etc/shorewall/policy':
-			mode    => 0644,
-			content => "\$FW all ACCEPT\ninet all DROP info\nall all REJECT info\n",
-			notify  => Exec['shorewall-reload'],
-		}
-	
-		# ip4 rules (composed)
-		concat { '/etc/shorewall/rules':
-			mode    => 0644,
-			notify  => Exec['shorewall-reload'],
-		}
-
-		# ipv4 tunnels (composed)
-		concat { '/etc/shorewall/tunnels':
-			mode    => 0644,
-			notify  => Exec['shorewall-reload'],
-		}
-
-		# ip4 shorewall.conf
-		file { '/etc/shorewall/shorewall.conf':
-			ensure  => present,
-			notify  => Exec['shorewall-reload'],
-		}
-
-		exec { 'shorewall-reload':
-			command     => '/etc/init.d/shorewall restart',
-			refreshonly => true,
+		shorewall::multi::zone { $inet:
+			proto => 'ipv4',
 		}
 	}
 
 	if $ipv6 {
-		# ip6 zones (just inet)
-		file { '/etc/shorewall6/zones':
-			mode    => 0644,
-			content => "local firewall\ninet ipv6\n",
-			notify  => Exec['shorewall6-reload'],
-		}
-
-		# ip6 interfaces (composed)
-		concat { '/etc/shorewall6/interfaces':
-			mode    => 0644,
-			notify  => Exec['shorewall6-reload'],
-		}
-
-		# ip6 policy (default DROP)
-		file { '/etc/shorewall6/policy':
-			mode    => 0644,
-			content => "\$FW all ACCEPT\ninet all DROP info\nall all REJECT info\n",
-			notify  => Exec['shorewall6-reload'],
-		}
-	
-		concat::fragment { 'shorewall-ping-rule':
-			order   => '00',
-			target  => '/etc/shorewall/rules',
-			content => "Ping/ACCEPT all \$FW\n",
-		}
-
-		# ip6 rules (composed)
-		concat { '/etc/shorewall6/rules':
-			mode    => 0644,
-			notify  => Exec['shorewall6-reload'],
-		}
-
-		concat::fragment { 'shorewall6-ping-rule':
-			order   => '00',
-			target  => '/etc/shorewall6/rules',
-			content => "Ping/ACCEPT all \$FW\n",
-		}
-
-		# ipv6 tunnels (composed)
-		concat { '/etc/shorewall6/tunnels':
-			mode    => 0644,
-			notify  => Exec['shorewall6-reload'],
-		}
-
-		# ip6 shorewall.conf
-		file { '/etc/shorewall6/shorewall6.conf':
-			ensure  => present,
-			notify  => Exec['shorewall6-reload'],
-		}
-
-		exec { 'shorewall6-reload':
-			command     => '/etc/init.d/shorewall6 restart',
-			refreshonly => true,
+		shorewall::multi::zone { $inet:
+			proto => 'ipv6',
 		}
 	}
 }

@@ -1,8 +1,9 @@
 # ex:ts=4 sw=4 tw=72
 
 class shorewall::multi (
-	$ipv4 = $shorewall::params::ipv4,
-	$ipv6 = $shorewall::params::ipv6,
+	$ipv4    = $shorewall::params::ipv4,
+	$ipv6    = $shorewall::params::ipv6,
+	$tunnels = false,
 ) inherits shorewall::params {
 
 	class { 'shorewall::base':
@@ -60,19 +61,21 @@ class shorewall::multi (
 		$zone,
 		$gateway = '0.0.0.0/0',
 	) {
-		if $shorewall::multi::ipv4 {
-			concat::fragment { "tunnel-ipv4-${type}-${gateway}":
-				order   => '50',
-				target  => '/etc/shorewall/tunnels',
-				content => "${type} ${zone} ${gateway}\n",
+		if $tunnels {
+			if $shorewall::multi::ipv4 {
+				concat::fragment { "tunnel-ipv4-${type}-${gateway}":
+					order   => '50',
+					target  => '/etc/shorewall/tunnels',
+					content => "${type} ${zone} ${gateway}\n",
+				}
 			}
-		}
 
-		if $shorewall::multi::ipv6 {
-			concat::fragment { "tunnel-ipv6-${type}-${gateway}":
-				order   => '50',
-				target  => '/etc/shorewall6/tunnels',
-				content => "${type} ${zone} ${gateway}\n",
+			if $shorewall::multi::ipv6 {
+				concat::fragment { "tunnel-ipv6-${type}-${gateway}":
+					order   => '50',
+					target  => '/etc/shorewall6/tunnels',
+					content => "${type} ${zone} ${gateway}\n",
+				}
 			}
 		}
 	}
@@ -150,9 +153,16 @@ class shorewall::multi (
 		}
 
 		# ipv4 tunnels (composed)
-		concat { '/etc/shorewall/tunnels':
-			mode    => 0644,
-			notify  => Exec['shorewall-reload'],
+		if $tunnels {
+			concat { '/etc/shorewall/tunnels':
+				mode    => 0644,
+				notify  => Exec['shorewall-reload'],
+			}
+		} else {
+			file { '/etc/shorewall/tunnels':
+				ensure => absent,
+				notify  => Exec['shorewall-reload'],
+			}
 		}
 
 		# ip4 shorewall.conf
@@ -207,9 +217,16 @@ class shorewall::multi (
 		}
 
 		# ipv6 tunnels (composed)
-		concat { '/etc/shorewall6/tunnels':
-			mode    => 0644,
-			notify  => Exec['shorewall6-reload'],
+		if $tunnels {
+			concat { '/etc/shorewall6/tunnels':
+				mode    => 0644,
+				notify  => Exec['shorewall6-reload'],
+			}
+		} else {
+			file { '/etc/shorewall6/tunnels':
+				ensure => absent,
+				notify => Exec['shorewall6-reload'],
+			}
 		}
 
 		# ip6 shorewall.conf
