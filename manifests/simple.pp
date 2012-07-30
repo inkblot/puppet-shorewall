@@ -50,15 +50,12 @@ class shorewall::simple (
 		}
 	}
 
-	if $ipv4 {
-		shorewall::multi::zone { $inet:
-			proto => 'ipv4',
-		}
-	}
+	shorewall::multi::zone { $inet: }
 
-	if $ipv6 {
-		shorewall::multi::zone { $inet:
-			proto => 'ipv6',
-		}
+	shorewall::multi::policy { "policy-drop-$inet-to-local":
+		priority => '10',
+		source   => $inet,
+		dest     => '$FW',
+		action   => 'DROP',
 	}
 }
