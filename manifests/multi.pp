@@ -58,12 +58,13 @@ class shorewall::multi (
 	}
 
 	define tunnel (
+		$proto   = 'ipv4',
 		$type,
 		$zone,
 		$gateway = '0.0.0.0/0',
 	) {
 		if $tunnels {
-			if $shorewall::multi::ipv4 {
+			if $proto == 'ipv4' {
 				concat::fragment { "tunnel-ipv4-${type}-${gateway}":
 					order   => '50',
 					target  => '/etc/shorewall/tunnels',
@@ -71,7 +72,7 @@ class shorewall::multi (
 				}
 			}
 
-			if $shorewall::multi::ipv6 {
+			if $proto == 'ipv6' {
 				concat::fragment { "tunnel-ipv6-${type}-${gateway}":
 					order   => '50',
 					target  => '/etc/shorewall6/tunnels',
