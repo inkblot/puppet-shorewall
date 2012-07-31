@@ -1,10 +1,11 @@
 # ex:ts=4 sw=4 tw=72
 
 class shorewall::simple (
-	$ipv4    = $shorewall::params::ipv4,
-	$ipv6    = $shorewall::params::ipv6,
-	$inet    = 'inet',
-	$tunnels = false,
+	$ipv4         = $shorewall::params::ipv4,
+	$ipv6         = $shorewall::params::ipv6,
+	$inet         = 'inet',
+	$ipv4_tunnels = false,
+	$ipv6_tunnels = false,
 ) inherits shorewall::params {
 
 	class { 'shorewall::multi':

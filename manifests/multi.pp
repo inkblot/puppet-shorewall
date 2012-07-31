@@ -3,7 +3,8 @@
 class shorewall::multi (
 	$ipv4           = $shorewall::params::ipv4,
 	$ipv6           = $shorewall::params::ipv6,
-	$tunnels        = false,
+	$ipv4_tunnels   = false,
+	$ipv6_tunnels   = false,
 	$default_policy = 'REJECT',
 ) inherits shorewall::params {
 
@@ -63,21 +64,19 @@ class shorewall::multi (
 		$zone,
 		$gateway = '0.0.0.0/0',
 	) {
-		if $tunnels {
-			if $proto == 'ipv4' {
-				concat::fragment { "tunnel-ipv4-${type}-${gateway}":
-					order   => '50',
-					target  => '/etc/shorewall/tunnels',
-					content => "${type} ${zone} ${gateway}\n",
-				}
+		if $ipv4_tunnels && $proto == 'ipv4' {
+			concat::fragment { "tunnel-ipv4-${type}-${gateway}":
+				order   => '50',
+				target  => '/etc/shorewall/tunnels',
+				content => "${type} ${zone} ${gateway}\n",
 			}
+		}
 
-			if $proto == 'ipv6' {
-				concat::fragment { "tunnel-ipv6-${type}-${gateway}":
-					order   => '50',
-					target  => '/etc/shorewall6/tunnels',
-					content => "${type} ${zone} ${gateway}\n",
-				}
+		if $ipv6_tunnels && $proto == 'ipv6' {
+			concat::fragment { "tunnel-ipv6-${type}-${gateway}":
+				order   => '50',
+				target  => '/etc/shorewall6/tunnels',
+				content => "${type} ${zone} ${gateway}\n",
 			}
 		}
 	}
@@ -177,7 +176,7 @@ class shorewall::multi (
 		}
 
 		# ipv4 tunnels (composed)
-		if $tunnels {
+		if $ipv4_tunnels {
 			concat { '/etc/shorewall/tunnels':
 				mode   => 0644,
 				notify => Exec['shorewall-reload'],
@@ -251,7 +250,7 @@ class shorewall::multi (
 		}
 
 		# ipv6 tunnels (composed)
-		if $tunnels {
+		if $ipv6_tunnels {
 			concat { '/etc/shorewall6/tunnels':
 				mode   => 0644,
 				notify => Exec['shorewall6-reload'],
