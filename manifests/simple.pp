@@ -44,13 +44,11 @@ class shorewall::simple (
 		$type,
 		$gateway = '0.0.0.0/0',
 	) {
-		if $tunnels {
-			shorewall::multi::tunnel { $name:
-				proto   => $proto,
-				type    => $type,
-				gateway => $gateway,
-				zone    => $shorewall::simple::inet,
-			}
+		shorewall::multi::tunnel { $name:
+			proto   => $proto,
+			type    => $type,
+			gateway => $gateway,
+			zone    => $shorewall::simple::inet,
 		}
 	}
 
