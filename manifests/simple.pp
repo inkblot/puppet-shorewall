@@ -9,9 +9,10 @@ class shorewall::simple (
 ) inherits shorewall::params {
 
 	class { 'shorewall::multi':
-		ipv4    => $ipv4,
-		ipv6    => $ipv6,
-		tunnels => $tunnels,
+		ipv4         => $ipv4,
+		ipv6         => $ipv6,
+		ipv4_tunnels => $ipv4_tunnels,
+		ipv6_tunnels => $ipv6_tunnels,
 	}
 
 	define iface (
