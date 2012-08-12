@@ -105,6 +105,18 @@ class shorewall::multi (
 			}
 		}
 
+		# ipv4 masquerading
+		concat { '/etc/shorewall/masq':
+			mode   => '0644',
+			notify => Exec['shorewall-reload'],
+		}
+
+		concat::fragment { 'masq-preamble':
+			order   => '00',
+			target  => '/etc/shorewall/masq',
+			content => "# This file is managed by puppet\n# Changes will be lost\n",
+		}
+
 		# ip4 shorewall.conf
 		file { '/etc/shorewall/shorewall.conf':
 			ensure => present,
