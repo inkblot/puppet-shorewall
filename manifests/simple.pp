@@ -23,7 +23,10 @@ class shorewall::simple (
 		shorewall::multi::iface { $name:
 			ipv4    => $ipv4,
 			ipv6    => $ipv6,
-			options => $dynamic ? [ 'tcpflags', 'nosmurfs', 'routefilter', 'dhcp', 'optional' ] : [ 'tcpflags', 'nosmurfs', 'routefilter' ],
+			options => $dynamic ? {
+				true: [ 'tcpflags', 'nosmurfs', 'routefilter', 'dhcp', 'optional' ],
+				false: [ 'tcpflags', 'nosmurfs', 'routefilter' ],
+			},
 			zone    => $shorewall::simple::inet,
 		}
 	}
