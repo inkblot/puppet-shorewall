@@ -143,8 +143,14 @@ class shorewall::multi (
 			notify => Exec['shorewall-reload'],
 		}
 
+		concat::fragment { 'zones-preamble':
+			order   => '00',
+			target  => '/etc/shorewall/zones',
+			content => "# This file is managed by puppet\n# Edits will be lost\n",
+		}
+
 		concat::fragment { 'shorewall-zones-local':
-			order   => 0,
+			order   => '01',
 			target  => '/etc/shorewall/zones',
 			content => "local firewall\n",
 		}
@@ -155,14 +161,26 @@ class shorewall::multi (
 			notify => Exec['shorewall-reload'],
 		}
 
+		concat::fragment { 'interfaces-preamble':
+			order   => '00',
+			target  => '/etc/shorewall/interfaces',
+			content => "# This file is managed by puppet\n# Changes will be lost\n",
+		}
+
 		# ip4 policy (composed)
 		concat { '/etc/shorewall/policy':
 			mode   => 0644,
 			notify => Exec['shorewall-reload'],
 		}
 
-		concat::fragment { 'policy-ipv4-accept-outbound':
+		concat::fragment { 'policy-preamble':
 			order   => 'a-00',
+			target  => '/etc/shorewall/policy',
+			content => "# This file is managed by puppet\n# Changes will be lost\n",
+		}
+
+		concat::fragment { 'policy-ipv4-accept-outbound':
+			order   => 'b-00',
 			target  => '/etc/shorewall/policy',
 			content => "\$FW all ACCEPT\n",
 		}
@@ -179,8 +197,14 @@ class shorewall::multi (
 			notify => Exec['shorewall-reload'],
 		}
 
-		concat::fragment { 'rule-ipv4-accept-ping':
+		concat::fragment { 'rules-preamble':
 			order   => '00',
+			target  => '/etc/shorewall/rules',
+			content => "# This file is managed by puppet\n# Changes will be lost\n",
+		}
+
+		concat::fragment { 'rule-ipv4-accept-ping':
+			order   => '01',
 			target  => '/etc/shorewall/rules',
 			content => "Ping/ACCEPT all \$FW\n",
 		}
@@ -190,6 +214,12 @@ class shorewall::multi (
 			concat { '/etc/shorewall/tunnels':
 				mode   => 0644,
 				notify => Exec['shorewall-reload'],
+			}
+
+			concat::fragment { 'tunnels-preamble':
+				order   => '00',
+				target  => '/etc/shorewall/tunnels',
+				content => "# This file is managed by puppet\n# Changes will be lost\n",
 			}
 		} else {
 			file { '/etc/shorewall/tunnels':
@@ -217,8 +247,14 @@ class shorewall::multi (
 			notify => Exec['shorewall6-reload'],
 		}
 
+		concat::fragment { 'zones6-preamble':
+			order   => '00',
+			target  => '/etc/shorewall6/zones',
+			content => "# This file is managed by puppet\n# Changes will be lost\n",
+		}
+
 		concat::fragment { 'shorewall6-zones-local':
-			order   => 0,
+			order   => '01',
 			target  => '/etc/shorewall6/zones',
 			content => "local firewall\n",
 		}
@@ -229,14 +265,26 @@ class shorewall::multi (
 			notify => Exec['shorewall6-reload'],
 		}
 
+		concat::fragment { 'interfaces6-preamble':
+			order   => '00',
+			target  => '/etc/shorewall6/interfaces',
+			content => "# This file is managed by puppet\n# Changes will be lost\n",
+		}
+
 		# ip6 policy (default DROP)
 		concat { '/etc/shorewall6/policy':
 			mode   => 0644,
 			notify => Exec['shorewall6-reload'],
 		}
+
+		concat::fragment { 'policy6-preamble':
+			order   => 'a-00',
+			target  => '/etc/shorewall6/policy',
+			content => "# This file is managed by puppet\n# Changes will be lost\n",
+		}
 	
 		concat::fragment { 'policy-ipv6-accept-outbound':
-			order   => 'a-00',
+			order   => 'b-00',
 			target  => '/etc/shorewall6/policy',
 			content => "\$FW all ACCEPT\n",
 		}
@@ -253,8 +301,14 @@ class shorewall::multi (
 			notify => Exec['shorewall6-reload'],
 		}
 
-		concat::fragment { 'rule-ipv6-accept-ping':
+		concat::fragment { 'rules6-preamble':
 			order   => '00',
+			target  => '/etc/shorewall6/rules',
+			content => "# This file is managed by puppet\n# Changes will be lost\n",
+		}
+
+		concat::fragment { 'rule-ipv6-accept-ping':
+			order   => '01',
 			target  => '/etc/shorewall6/rules',
 			content => "Ping/ACCEPT all \$FW\n",
 		}
@@ -264,6 +318,12 @@ class shorewall::multi (
 			concat { '/etc/shorewall6/tunnels':
 				mode   => 0644,
 				notify => Exec['shorewall6-reload'],
+			}
+
+			concat::fragment { 'tunnels6-preamble':
+				order   => '00',
+				target  => '/etc/shorewall6/tunnels',
+				content => "# This file is managed by puppet\n# Changes will be lost\n",
 			}
 		} else {
 			file { '/etc/shorewall6/tunnels':
