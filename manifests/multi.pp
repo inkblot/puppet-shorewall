@@ -1,11 +1,13 @@
 # ex:ts=4 sw=4 tw=72
 
 class shorewall::multi (
-	$ipv4           = $shorewall::params::ipv4,
-	$ipv6           = $shorewall::params::ipv6,
-	$ipv4_tunnels   = false,
-	$ipv6_tunnels   = false,
-	$default_policy = 'REJECT',
+	$ipv4            = $shorewall::params::ipv4,
+	$ipv6            = $shorewall::params::ipv6,
+	$ipv4_tunnels    = false,
+	$ipv6_tunnels    = false,
+	$default_policy  = 'REJECT',
+	$ip_forwarding   = false,
+	$traffic_control = false,
 ) inherits shorewall::params {
 
 	class { 'shorewall::base':
@@ -14,12 +16,18 @@ class shorewall::multi (
 	}
 
 	if $ipv4 {
-		# ip4 zones (composed)
-		concat { '/etc/shorewall/zones':
-			mode   => 0644,
+		concat { [
+				'/etc/shorewall/zones',
+				'/etc/shorewall/interfaces',
+				'/etc/shorewall/policy',
+				'/etc/shorewall/rules',
+				'/etc/shorewall/masq',
+			]:
+			mode   => '0644',
 			notify => Exec['shorewall-reload'],
 		}
 
+		# ip4 zones
 		concat::fragment { 'zones-preamble':
 			order   => '00',
 			target  => '/etc/shorewall/zones',
@@ -32,24 +40,14 @@ class shorewall::multi (
 			content => "local firewall\n",
 		}
 
-		# ip4 interfaces (composed)
-		concat { '/etc/shorewall/interfaces':
-			mode   => 0644,
-			notify => Exec['shorewall-reload'],
-		}
-
+		# ip4 interfaces
 		concat::fragment { 'interfaces-preamble':
 			order   => '00',
 			target  => '/etc/shorewall/interfaces',
 			content => "# This file is managed by puppet\n# Changes will be lost\n",
 		}
 
-		# ip4 policy (composed)
-		concat { '/etc/shorewall/policy':
-			mode   => 0644,
-			notify => Exec['shorewall-reload'],
-		}
-
+		# ip4 policy
 		concat::fragment { 'policy-preamble':
 			order   => 'a-00',
 			target  => '/etc/shorewall/policy',
@@ -68,12 +66,7 @@ class shorewall::multi (
 			content => "all all ${default_policy}\n",
 		}
 	
-		# ip4 rules (composed)
-		concat { '/etc/shorewall/rules':
-			mode   => 0644,
-			notify => Exec['shorewall-reload'],
-		}
-
+		# ip4 rules
 		concat::fragment { 'rules-preamble':
 			order   => '00',
 			target  => '/etc/shorewall/rules',
@@ -106,21 +99,57 @@ class shorewall::multi (
 		}
 
 		# ipv4 masquerading
-		concat { '/etc/shorewall/masq':
-			mode   => '0644',
-			notify => Exec['shorewall-reload'],
-		}
-
 		concat::fragment { 'masq-preamble':
 			order   => '00',
 			target  => '/etc/shorewall/masq',
 			content => "# This file is managed by puppet\n# Changes will be lost\n",
 		}
 
+		if $traffic_control {
+			concat { [
+					'/etc/shorewall/tcinterfaces',
+					'/etc/shorewall/tcpri',
+					'/etc/shorewall/tcrules',
+				]:
+				mode   => '0644',
+				notify => Exec['shorewall-reload'],
+			}
+
+			# ipv4 tc interfaces
+			concat::fragment { 'tcinterfaces-preamble':
+				order   => '00',
+				target  => '/etc/shorewall/tcinterfaces',
+				content => "# This file is managed by puppet\n# Changes will be lost\n",
+			}
+
+			# ipv4 tc priorities
+			concat::fragment { 'tcpri-preamble':
+				order   => '00',
+				target  => '/etc/shorewall/tcpri',
+				content => "# This file is managed by puppet\n# Changes will be lost\n",
+			}
+
+			# ipv4 tc rules
+			concat::fragment { 'tcrules-preamble':
+				order   => '00',
+				target  => '/etc/shorewall/tcrules',
+				content => "# This file is managed by puppet\n# Changes will be lost\n",
+			}
+		} else {
+			file { [
+					'/etc/shorewall/tcinterfaces',
+					'/etc/shorewall/tcpri',
+					'/etc/shorewall/tcrules',
+				]:
+				ensure => absent,
+			}
+		}
+
 		# ip4 shorewall.conf
 		file { '/etc/shorewall/shorewall.conf':
-			ensure => present,
-			notify => Exec['shorewall-reload'],
+			ensure  => present,
+			content => template('shorewall/shorewall.conf.erb'),
+			notify  => Exec['shorewall-reload'],
 		}
 
 		exec { 'shorewall-reload':
@@ -130,12 +159,17 @@ class shorewall::multi (
 	}
 
 	if $ipv6 {
-		# ip6 zones (composed)
-		concat { '/etc/shorewall6/zones':
+		concat { [
+				'/etc/shorewall6/zones',
+				'/etc/shorewall6/interfaces',
+				'/etc/shorewall6/policy',
+				'/etc/shorewall6/rules',
+			]:
 			mode   => 0644,
 			notify => Exec['shorewall6-reload'],
 		}
 
+		# ip6 zones
 		concat::fragment { 'zones6-preamble':
 			order   => '00',
 			target  => '/etc/shorewall6/zones',
@@ -148,12 +182,7 @@ class shorewall::multi (
 			content => "local firewall\n",
 		}
 
-		# ip6 interfaces (composed)
-		concat { '/etc/shorewall6/interfaces':
-			mode   => 0644,
-			notify => Exec['shorewall6-reload'],
-		}
-
+		# ip6 interfaces
 		concat::fragment { 'interfaces6-preamble':
 			order   => '00',
 			target  => '/etc/shorewall6/interfaces',
@@ -161,11 +190,6 @@ class shorewall::multi (
 		}
 
 		# ip6 policy (default DROP)
-		concat { '/etc/shorewall6/policy':
-			mode   => 0644,
-			notify => Exec['shorewall6-reload'],
-		}
-
 		concat::fragment { 'policy6-preamble':
 			order   => 'a-00',
 			target  => '/etc/shorewall6/policy',
@@ -184,12 +208,7 @@ class shorewall::multi (
 			content => "all all DROP\n",
 		}
 	
-		# ip6 rules (composed)
-		concat { '/etc/shorewall6/rules':
-			mode   => 0644,
-			notify => Exec['shorewall6-reload'],
-		}
-
+		# ip6 rules
 		concat::fragment { 'rules6-preamble':
 			order   => '00',
 			target  => '/etc/shorewall6/rules',
@@ -202,7 +221,7 @@ class shorewall::multi (
 			content => "Ping/ACCEPT all \$FW\n",
 		}
 
-		# ipv6 tunnels (composed)
+		# ipv6 tunnels
 		if $ipv6_tunnels {
 			concat { '/etc/shorewall6/tunnels':
 				mode   => 0644,
