@@ -22,12 +22,13 @@ class shorewall::multi (
 				'/etc/shorewall/policy',
 				'/etc/shorewall/rules',
 				'/etc/shorewall/masq',
+				'/etc/shorewall/hosts',
 			]:
 			mode   => '0644',
 			notify => Exec['shorewall-reload'],
 		}
 
-		# ip4 zones
+		# ipv4 zones
 		concat::fragment { 'zones-preamble':
 			order   => '00',
 			target  => '/etc/shorewall/zones',
@@ -40,14 +41,14 @@ class shorewall::multi (
 			content => "local firewall\n",
 		}
 
-		# ip4 interfaces
+		# ipv4 interfaces
 		concat::fragment { 'interfaces-preamble':
 			order   => '00',
 			target  => '/etc/shorewall/interfaces',
 			content => "# This file is managed by puppet\n# Changes will be lost\n",
 		}
 
-		# ip4 policy
+		# ipv4 policy
 		concat::fragment { 'policy-preamble':
 			order   => 'a-00',
 			target  => '/etc/shorewall/policy',
@@ -66,7 +67,7 @@ class shorewall::multi (
 			content => "all all ${default_policy}\n",
 		}
 	
-		# ip4 rules
+		# ipv4 rules
 		concat::fragment { 'rules-preamble':
 			order   => '00',
 			target  => '/etc/shorewall/rules',
@@ -77,6 +78,13 @@ class shorewall::multi (
 			order   => '01',
 			target  => '/etc/shorewall/rules',
 			content => "Ping/ACCEPT all \$FW\n",
+		}
+
+		# ipv4 hosts
+		concat::fragment { 'hosts-preamble':
+			order   => '01',
+			target  => '/etc/shorewall/hosts',
+			content => "# This file is managed by puppet\n# Changes will be lost\n",
 		}
 
 		# ipv4 tunnels (composed)
@@ -145,7 +153,7 @@ class shorewall::multi (
 			}
 		}
 
-		# ip4 shorewall.conf
+		# ipv4 shorewall.conf
 		file { '/etc/shorewall/shorewall.conf':
 			ensure  => present,
 			content => template('shorewall/shorewall.conf.erb'),
