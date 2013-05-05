@@ -16,7 +16,7 @@ define shorewall::multi::rule (
 				target  => '/etc/shorewall/rules',
 				content => "${application}/${action} ${source} ${dest}\n",
 			}
-		} else if $proto != '' and $port != -1 {
+		} elsif $proto != '' and $port != -1 {
 			concat::fragment { "rule-ipv4-${source}-to-${dest}-${proto}-${port}":
 				order   => $order,
 				target  => '/etc/shorewall/rules',
@@ -34,7 +34,7 @@ define shorewall::multi::rule (
 				target  => '/etc/shorewall6/rules',
 				content => "${application}/${action} ${source} ${dest}\n",
 			}
-		} else if $proto != '' and $port != -1 {
+		} elsif $proto != '' and $port != -1 {
 			concat::fragment { "rule-ipv6-${source}-to-${dest}-${proto}-${port}":
 				order   => $order,
 				target  => '/etc/shorewall6/rules',
