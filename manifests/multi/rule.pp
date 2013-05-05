@@ -19,7 +19,7 @@ define shorewall::multi::rule (
 	if $shorewall::multi::ipv6 {
 		concat::fragment { "rule-ipv6-${source}-to-${dest}-${proto}-${port}":
 			order   => $order,
-			target  => '/etc/shorewall/rules',
+			target  => '/etc/shorewall6/rules',
 			content => "${action} ${source} ${dest} ${proto} ${port}\n",
 		}
 	}
