@@ -7,7 +7,7 @@ define shorewall::multi::port (
 	$action = 'ACCEPT',
 	$order  = '50',
 ) {
-	shorewall::multi::rule {
+	shorewall::multi::rule { "port-${source}-${proto}-${port}":
 		proto  => $proto,
 		port   => $port,
 		source => $source,
