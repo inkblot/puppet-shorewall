@@ -23,7 +23,7 @@ define shorewall::multi::rule (
 				content => "${action} ${source} ${dest} ${proto} ${port}\n",
 			}
 		} else {
-			fail("shorewall::multi::rule requires either a proto and port or an application")
+			fail("Shorewall::Multi::Rule[${name}] requires either a proto and port or an application")
 		}
 	}
 
@@ -41,7 +41,7 @@ define shorewall::multi::rule (
 				content => "${action} ${source} ${dest} ${proto} ${port}\n",
 			}
 		} else {
-			fail("shorewall::multi::rule requires either a proto and port or an application")
+			fail("Shorewall::Multi::Rule[${name}] requires either a proto and port or an application")
 		}
 	}
 }
