@@ -4,20 +4,15 @@ define shorewall::multi::port (
 	$proto,
 	$port,
 	$source,
+	$action = 'ACCEPT',
+	$order  = '50',
 ) {
-	if $shorewall::multi::ipv4 {
-		concat::fragment { "port-ipv4-${source}-${proto}-${port}":
-			order   => '50',
-			target  => '/etc/shorewall/rules',
-			content => "ACCEPT ${source} \$FW ${proto} ${port}\n",
-		}
-	}
-
-	if $shorewall::multi::ipv6 {
-		concat::fragment { "port-ipv6-${source}-${proto}-${port}":
-			order   => '50',
-			target  => '/etc/shorewall6/rules',
-			content => "ACCEPT ${source} \$FW ${proto} ${port}\n",
-		}
+	shorewall::multi::rule {
+		proto  => $proto,
+		port   => $port,
+		source => $source,
+		dest   => '$FW',
+		action => $action,
+		order  => $order,
 	}
 }

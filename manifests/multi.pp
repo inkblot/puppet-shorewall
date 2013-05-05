@@ -75,7 +75,7 @@ class shorewall::multi (
 		}
 
 		concat::fragment { 'rule-ipv4-accept-ping':
-			order   => '01',
+			order   => '90',
 			target  => '/etc/shorewall/rules',
 			content => "Ping/ACCEPT all \$FW\n",
 		}
