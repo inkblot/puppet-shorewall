@@ -1,26 +1,47 @@
 # ex:ts=4 sw=4 tw=72
 
 define shorewall::multi::rule (
-	$proto,
-	$port,
+	$application = '',
+	$proto       = '',
+	$port        = -1,
 	$source,
 	$dest,
 	$action,
 	$order  = '50',
 ) {
 	if $shorewall::multi::ipv4 {
-		concat::fragment { "rule-ipv4-${source}-to-${dest}-${proto}-${port}":
-			order   => $order,
-			target  => '/etc/shorewall/rules',
-			content => "${action} ${source} ${dest} ${proto} ${port}\n",
+		if $application != '' {
+			concat::fragment { "rule-ipv4-${source}-to-${dest}-${application}":
+				order   => $order,
+				target  => '/etc/shorewall/rules',
+				content => "${application}/${action} ${source} ${dest}\n",
+			}
+		} else if $proto != '' and $port != -1 {
+			concat::fragment { "rule-ipv4-${source}-to-${dest}-${proto}-${port}":
+				order   => $order,
+				target  => '/etc/shorewall/rules',
+				content => "${action} ${source} ${dest} ${proto} ${port}\n",
+			}
+		} else {
+			fail("shorewall::multi::rule requires either a proto and port or an application")
 		}
 	}
 
 	if $shorewall::multi::ipv6 {
-		concat::fragment { "rule-ipv6-${source}-to-${dest}-${proto}-${port}":
-			order   => $order,
-			target  => '/etc/shorewall6/rules',
-			content => "${action} ${source} ${dest} ${proto} ${port}\n",
+		if $application != '' {
+			concat::fragment { "rule-ipv6-${source}-to-${dest}-${application}":
+				order   => $order,
+				target  => '/etc/shorewall6/rules',
+				content => "${application}/${action} ${source} ${dest}\n",
+			}
+		} else if $proto != '' and $port != -1 {
+			concat::fragment { "rule-ipv6-${source}-to-${dest}-${proto}-${port}":
+				order   => $order,
+				target  => '/etc/shorewall6/rules',
+				content => "${action} ${source} ${dest} ${proto} ${port}\n",
+			}
+		} else {
+			fail("shorewall::multi::rule requires either a proto and port or an application")
 		}
 	}
 }
