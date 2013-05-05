@@ -9,7 +9,7 @@ define shorewall::multi::port (
 	$order       = '50',
 ) {
 	shorewall::multi::rule { "port-${name}":
-		application => $application
+		application => $application,
 		proto       => $proto,
 		port        => $port,
 		source      => $source,
