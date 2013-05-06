@@ -55,29 +55,11 @@ class shorewall::multi (
 			content => "# This file is managed by puppet\n# Changes will be lost\n",
 		}
 
-		concat::fragment { 'policy-ipv4-accept-outbound':
-			order   => 'b-00',
-			target  => '/etc/shorewall/policy',
-			content => "\$FW all ACCEPT\n",
-		}
-
-		concat::fragment { 'policy-ipv4-drop-all-all':
-			order   => 'z-99',
-			target  => '/etc/shorewall/policy',
-			content => "all all ${default_policy}\n",
-		}
-	
 		# ipv4 rules
 		concat::fragment { 'rules-preamble':
 			order   => '00',
 			target  => '/etc/shorewall/rules',
 			content => "# This file is managed by puppet\n# Changes will be lost\n",
-		}
-
-		concat::fragment { 'rule-ipv4-accept-ping':
-			order   => '90',
-			target  => '/etc/shorewall/rules',
-			content => "Ping/ACCEPT all \$FW\n",
 		}
 
 		# ipv4 hosts
@@ -204,29 +186,11 @@ class shorewall::multi (
 			content => "# This file is managed by puppet\n# Changes will be lost\n",
 		}
 	
-		concat::fragment { 'policy-ipv6-accept-outbound':
-			order   => 'b-00',
-			target  => '/etc/shorewall6/policy',
-			content => "\$FW all ACCEPT\n",
-		}
-
-		concat::fragment { 'policy-ipv6-drop-all-all':
-			order   => 'z-99',
-			target  => '/etc/shorewall6/policy',
-			content => "all all DROP\n",
-		}
-	
 		# ip6 rules
 		concat::fragment { 'rules6-preamble':
 			order   => '00',
 			target  => '/etc/shorewall6/rules',
 			content => "# This file is managed by puppet\n# Changes will be lost\n",
-		}
-
-		concat::fragment { 'rule-ipv6-accept-ping':
-			order   => '01',
-			target  => '/etc/shorewall6/rules',
-			content => "Ping/ACCEPT all \$FW\n",
 		}
 
 		# ipv6 tunnels

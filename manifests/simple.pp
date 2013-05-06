@@ -15,6 +15,7 @@ class shorewall::simple (
 		ipv6_tunnels => $ipv6_tunnels,
 	}
 
+
 	define iface (
 		$ipv4    = $shorewall::simple::ipv4,
 		$ipv6    = $shorewall::simple::ipv6,
@@ -57,10 +58,29 @@ class shorewall::simple (
 
 	shorewall::multi::zone { $inet: }
 
+	shorewall::multi::policy { "policy-accept-local-to-all":
+		priority => '00',
+		source   => '$FW',
+		dest     => 'all',
+		action   => 'ACCEPT',
+	}
+
 	shorewall::multi::policy { "policy-drop-$inet-to-local":
-		priority => '10',
+		priority => '00',
 		source   => $inet,
 		dest     => '$FW',
 		action   => 'DROP',
+	}
+
+	shorewall::multi::policy { "policy-${default_policy}":
+		priority => '99',
+		source   => 'all',
+		dest     => 'all',
+		action   => $default_policy,
+	}
+
+	shorewall::multi::port {
+		application => 'Ping',
+		action      => 'ACCEPT',
 	}
 }
