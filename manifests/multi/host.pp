@@ -3,6 +3,8 @@ define shorewall::multi::host (
 	$ipv6_prefix = '',
 ) {
 	if $ipv4_cidr != '' {
+		notify { "ipv4_cidr = '${ipv4_cidr}'": }
+
 		concat::fragment { "shorewall-host-ipv4-${name}":
 			order   => '50',
 			target  => '/etc/shorewall/hosts',
