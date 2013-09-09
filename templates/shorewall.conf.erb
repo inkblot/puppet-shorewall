@@ -138,7 +138,7 @@ IMPLICIT_CONTINUE=No
 
 HIGH_ROUTE_MARKS=No
 
-IP_FORWARDING=<%= ip_forwarding ? 'Yes' : 'No' %>
+IP_FORWARDING=<%= @ip_forwarding ? 'Yes' : 'No' %>
 
 KEEP_RT_TABLES=No
 
@@ -178,7 +178,7 @@ ROUTE_FILTER=Yes
 
 SAVE_IPSETS=No
 
-TC_ENABLED=<%= traffic_control ? 'Simple' : 'Internal' %>
+TC_ENABLED=<%= @traffic_control ? 'Simple' : 'Internal' %>
 
 TC_EXPERT=No
 
