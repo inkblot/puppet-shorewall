@@ -10,6 +10,13 @@ class shorewall::multi (
 	$traffic_control = false,
 ) inherits shorewall::params {
 
+	File {
+		ensure => present,
+		owner  => 'root',
+		group  => 'root',
+		mode   => '0644',
+	}
+
 	class { 'shorewall::base':
 		ipv4 => $ipv4,
 		ipv6 => $ipv6,
@@ -72,7 +79,7 @@ class shorewall::multi (
 		# ipv4 tunnels (composed)
 		if $ipv4_tunnels {
 			concat { '/etc/shorewall/tunnels':
-				mode   => 0644,
+				mode   => '0644',
 				notify => Exec['shorewall-reload'],
 			}
 
@@ -155,7 +162,7 @@ class shorewall::multi (
 				'/etc/shorewall6/policy',
 				'/etc/shorewall6/rules',
 			]:
-			mode   => 0644,
+			mode   => '0644',
 			notify => Exec['shorewall6-reload'],
 		}
 
@@ -196,7 +203,7 @@ class shorewall::multi (
 		# ipv6 tunnels
 		if $ipv6_tunnels {
 			concat { '/etc/shorewall6/tunnels':
-				mode   => 0644,
+				mode   => '0644',
 				notify => Exec['shorewall6-reload'],
 			}
 

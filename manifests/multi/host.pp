@@ -7,7 +7,7 @@ define shorewall::multi::host (
 		concat::fragment { "shorewall-host-ipv4-${name}":
 			order   => '50',
 			target  => '/etc/shorewall/hosts',
-			content => inline_template("<%= name %> <%= ipv4_cidr %> <%= options.join(',') %>\n"),
+			content => inline_template("<%= @name %> <%= @ipv4_cidr %> <%= @options.join(',') %>\n"),
 		}
 	}
 
@@ -15,7 +15,7 @@ define shorewall::multi::host (
 		concat::fragment { "shorewall-host-ipv6-${name}":
 			order   => '50',
 			target  => '/etc/shorewall6/hosts',
-			content => inclune_template("<%= name %> <%= ipv6_prefix %> <%= options.join(',') %>\n"),
+			content => inclune_template("<%= @name %> <%= @ipv6_prefix %> <%= @options.join(',') %>\n"),
 		}
 	}
 }

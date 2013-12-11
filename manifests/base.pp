@@ -7,6 +7,12 @@ class shorewall::base (
 
 	include concat::setup
 
+	File {
+		ensure => present,
+		owner  => 'root',
+		group  => 'root',
+	}
+
 	class { 'shorewall::install':
 		ipv4 => $ipv4,
 		ipv6 => $ipv6,
@@ -19,8 +25,7 @@ class shorewall::base (
 		}
 
 		file { '/etc/default/shorewall':
-			ensure => present,
-			mode   => 0644,
+			mode   => '0644',
 			source => 'puppet:///modules/shorewall/etc/default/shorewall',
 		}
 	}
@@ -32,8 +37,7 @@ class shorewall::base (
 		}
 
 		file { '/etc/default/shorewall6':
-			ensure => present,
-			mode   => 0644,
+			mode   => '0644',
 			source => 'puppet:///modules/shorewall/etc/default/shorewall6',
 		}
 	}

@@ -13,7 +13,7 @@ define shorewall::multi::iface (
 		concat::fragment { "shorewall-iface-ipv4-${name}":
 			order   => '50',
 			target  => '/etc/shorewall/interfaces',
-			content => inline_template("<%= zone %> <%= name %> detect <%= options.join(',') %>\n"),
+			content => inline_template("<%= @zone %> <%= @name %> detect <%= @options.join(',') %>\n"),
 		}
 
 		if $shorewall::multi::traffic_control and $out_bandwidth {
@@ -29,7 +29,7 @@ define shorewall::multi::iface (
 		concat::fragment { "shorewall-iface-ipv6-${name}":
 			order   => '50',
 			target  => '/etc/shorewall6/interfaces',
-			content => inline_template("<%= zone %> <%= name %> detect <%= options.reject { |el,i| el == 'routefilter' }.join(',') %>\n"),
+			content => inline_template("<%= @zone %> <%= @name %> detect <%= @options.reject { |el,i| el == 'routefilter' }.join(',') %>\n"),
 		}
 	}
 }
