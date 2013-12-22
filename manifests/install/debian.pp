@@ -1,4 +1,4 @@
-# ex:tx=4 sw=4 tw=72
+# ex: si ts=4 sw=4 et
 
 class shorewall::install::debian (
 	$ipv4,

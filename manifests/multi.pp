@@ -1,4 +1,4 @@
-# ex:ts=4 sw=4 tw=72
+# ex: si ts=4 sw=4 et
 
 class shorewall::multi (
 	$ipv4            = $shorewall::params::ipv4,

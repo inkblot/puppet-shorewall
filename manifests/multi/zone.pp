@@ -1,4 +1,4 @@
-# ex:ts=4 sw=4 tw=72
+# ex: si ts=4 sw=4 et
 
 define shorewall::multi::zone (
 	$ipv4  = $shorewall::multi::ipv4,
