@@ -1,47 +1,43 @@
 # ex: si ts=4 sw=4 et
 
 define shorewall::multi::rule (
-	$application = '',
-	$proto       = '',
-	$port        = -1,
+	$application   = '',
+	$proto         = '',
+	$port          = '',
+	$sport         = '',
+	$original_dest = '',
 	$source,
 	$dest,
 	$action,
-	$order  = '50',
+    $ipv4          = $::shorewall::multi::ipv4,
+    $ipv6          = $::shorewall::multi::ipv6,
+	$order         = '50',
 ) {
-	if $shorewall::multi::ipv4 {
-		if $application != '' {
-			concat::fragment { "rule-ipv4-${source}-to-${dest}-${application}":
-				order   => $order,
-				target  => '/etc/shorewall/rules',
-				content => "${application}/${action} ${source} ${dest}\n",
-			}
-		} elsif $proto != '' and $port != -1 {
-			concat::fragment { "rule-ipv4-${source}-to-${dest}-${proto}-${port}":
-				order   => $order,
-				target  => '/etc/shorewall/rules',
-				content => "${action} ${source} ${dest} ${proto} ${port}\n",
-			}
-		} else {
-			fail("Shorewall::Multi::Rule[${name}] requires either a proto and port or an application")
+    if $application == '' {
+        validate_re($proto, '^([0-9]+|tcp|udp|-)$')
+        validate_re($port, '^([0-9]+|-)$')
+    } else {
+        validate_re($application, '^[[:alnum:]]+$')
+        validate_re($proto, '^-?$')
+        validate_re($port, '^-?$')
+    }
+    if $original_dest != '' {
+        validate_re($sport, '[^\s]+')
+    }
+
+	if $ipv4 {
+		concat::fragment { "rule-ipv4-${name}":
+			order   => $order,
+			target  => '/etc/shorewall/rules',
+			content => template('shorewall/rule.erb'),
 		}
 	}
 
-	if $shorewall::multi::ipv6 {
-		if $application != '' {
-			concat::fragment { "rule-ipv6-${source}-to-${dest}-${application}":
-				order   => $order,
-				target  => '/etc/shorewall6/rules',
-				content => "${application}/${action} ${source} ${dest}\n",
-			}
-		} elsif $proto != '' and $port != -1 {
-			concat::fragment { "rule-ipv6-${source}-to-${dest}-${proto}-${port}":
-				order   => $order,
-				target  => '/etc/shorewall6/rules',
-				content => "${action} ${source} ${dest} ${proto} ${port}\n",
-			}
-		} else {
-			fail("Shorewall::Multi::Rule[${name}] requires either a proto and port or an application")
+	if $ipv6 {
+		concat::fragment { "rule-ipv6-${name}":
+			order   => $order,
+			target  => '/etc/shorewall6/rules',
+			content => template('shorewall/rule.erb'),
 		}
 	}
 }

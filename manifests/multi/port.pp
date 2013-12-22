@@ -3,7 +3,7 @@
 define shorewall::multi::port (
 	$application = '',
 	$proto       = '',
-	$port        = -1,
+	$port        = '',
 	$source,
 	$action      = 'ACCEPT',
 	$order       = '50',

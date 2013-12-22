@@ -1,0 +1,5 @@
+<%- if @application.empty? -%>
+<%= @action %> <%= @source %> <%= @dest %> <%= @proto %><%= @port.empty? ? '' : " #{@port}" %><%= @sport.empty? ? '' : " #{@sport}" %><%= @original_dest.empty? ? '' : " #{@original_dest}" %>
+<%- else -%>
+<%= @application %>/<%= @action %> <%= @source %> <%= @dest %><%= @sport.empty? ? '' : " - - #{@sport}" %><%= @original_dest.empty? ? '' : " #{@original_dest}" %>
+<%- end -%>
