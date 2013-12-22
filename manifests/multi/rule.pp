@@ -1,17 +1,17 @@
 # ex: si ts=4 sw=4 et
 
 define shorewall::multi::rule (
-	$application   = '',
-	$proto         = '',
-	$port          = '',
-	$sport         = '',
-	$original_dest = '',
-	$source,
-	$dest,
-	$action,
+    $application   = '',
+    $proto         = '',
+    $port          = '',
+    $sport         = '',
+    $original_dest = '',
+    $source,
+    $dest,
+    $action,
     $ipv4          = $::shorewall::multi::ipv4,
     $ipv6          = $::shorewall::multi::ipv6,
-	$order         = '50',
+    $order         = '50',
 ) {
     if $application == '' {
         validate_re($proto, '^([0-9]+|tcp|udp|-)$')
@@ -25,19 +25,19 @@ define shorewall::multi::rule (
         validate_re($sport, '[^\s]+')
     }
 
-	if $ipv4 {
-		concat::fragment { "rule-ipv4-${name}":
-			order   => $order,
-			target  => '/etc/shorewall/rules',
-			content => template('shorewall/rule.erb'),
-		}
-	}
+    if $ipv4 {
+        concat::fragment { "rule-ipv4-${name}":
+            order   => $order,
+            target  => '/etc/shorewall/rules',
+            content => template('shorewall/rule.erb'),
+        }
+    }
 
-	if $ipv6 {
-		concat::fragment { "rule-ipv6-${name}":
-			order   => $order,
-			target  => '/etc/shorewall6/rules',
-			content => template('shorewall/rule.erb'),
-		}
-	}
+    if $ipv6 {
+        concat::fragment { "rule-ipv6-${name}":
+            order   => $order,
+            target  => '/etc/shorewall6/rules',
+            content => template('shorewall/rule.erb'),
+        }
+    }
 }
