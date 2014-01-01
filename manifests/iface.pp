@@ -1,8 +1,8 @@
 # ex: si ts=4 sw=4 et
 
-define shorewall::multi::iface (
-    $ipv4          = $shorewall::multi::ipv4,
-    $ipv6          = $shorewall::multi::ipv6,
+define shorewall::iface (
+    $ipv4          = $::shorewall::ipv4,
+    $ipv6          = $::shorewall::ipv6,
     $options       = [],
     $zone,
     $type          = 'External',
@@ -16,7 +16,7 @@ define shorewall::multi::iface (
             content => inline_template("<%= @zone %> <%= @name %> detect <%= @options.join(',') %>\n"),
         }
 
-        if $shorewall::multi::traffic_control and $out_bandwidth {
+        if $::shorewall::traffic_control and $out_bandwidth {
             concat::fragment { "shorewall-tciface-ipv4-${name}":
                 order   => '50',
                 target  => '/etc/shorewall/tcinterfaces',

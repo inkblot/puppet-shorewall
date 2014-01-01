@@ -1,8 +1,8 @@
 # ex: si ts=4 sw=4 et
 
-class shorewall::multi (
-    $ipv4            = $shorewall::params::ipv4,
-    $ipv6            = $shorewall::params::ipv6,
+class shorewall (
+    $ipv4            = $::shorewall::params::ipv4,
+    $ipv6            = $::shorewall::params::ipv6,
     $ipv4_tunnels    = false,
     $ipv6_tunnels    = false,
     $default_policy  = 'REJECT',
@@ -17,12 +17,21 @@ class shorewall::multi (
         mode   => '0644',
     }
 
-    class { 'shorewall::base':
-        ipv4 => $ipv4,
-        ipv6 => $ipv6,
-    }
-
     if $ipv4 {
+        package { 'shorewall':
+            ensure => latest,
+        }
+
+        file { '/etc/shorewall':
+            ensure  => directory,
+            require => Package['shorewall'],
+        }
+
+        file { '/etc/default/shorewall':
+            mode   => '0644',
+            source => 'puppet:///modules/shorewall/etc/default/shorewall',
+        }
+
         concat { [
                 '/etc/shorewall/zones',
                 '/etc/shorewall/interfaces',
@@ -156,6 +165,20 @@ class shorewall::multi (
     }
 
     if $ipv6 {
+        package { 'shorewall6':
+            ensure => latest,
+        }
+
+        file { '/etc/shorewall6':
+            ensure  => directory,
+            require => Package['shorewall6'],
+        }
+
+        file { '/etc/default/shorewall6':
+            mode   => '0644',
+            source => 'puppet:///modules/shorewall/etc/default/shorewall6',
+        }
+
         concat { [
                 '/etc/shorewall6/zones',
                 '/etc/shorewall6/interfaces',

@@ -1,8 +1,8 @@
 # ex: si ts=4 sw=4 et
 
-define shorewall::multi::zone (
-    $ipv4  = $shorewall::multi::ipv4,
-    $ipv6  = $shorewall::multi::ipv6,
+define shorewall::zone (
+    $ipv4  = $::shorewall::ipv4,
+    $ipv6  = $::shorewall::ipv6,
     $order = '50',
 ) {
     if $ipv4 {

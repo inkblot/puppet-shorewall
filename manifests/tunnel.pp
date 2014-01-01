@@ -1,6 +1,6 @@
 # ex: si ts=4 sw=4 et
 
-define shorewall::multi::tunnel (
+define shorewall::tunnel (
     $proto   = 'ipv4',
     $type,
     $zone,
@@ -8,7 +8,7 @@ define shorewall::multi::tunnel (
 ) {
     case $proto {
         'ipv4': {
-            if $shorewall::multi::ipv4_tunnels {
+            if $shorewall::ipv4_tunnels {
                 concat::fragment { "tunnel-ipv4-${type}-${gateway}":
                     order   => '50',
                     target  => '/etc/shorewall/tunnels',
@@ -19,7 +19,7 @@ define shorewall::multi::tunnel (
             }
         }
         'ipv6': {
-            if $shorewall::multi::ipv6_tunnels {
+            if $shorewall::ipv6_tunnels {
                 concat::fragment { "tunnel-ipv6-${type}-${gateway}":
                     order   => '50',
                     target  => '/etc/shorewall6/tunnels',

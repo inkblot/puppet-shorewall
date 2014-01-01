@@ -1,6 +1,6 @@
 # ex: si ts=4 sw=4 et
 
-define shorewall::multi::port (
+define shorewall::port (
     $application = '',
     $proto       = '',
     $port        = '',
@@ -8,7 +8,7 @@ define shorewall::multi::port (
     $action      = 'ACCEPT',
     $order       = '50',
 ) {
-    shorewall::multi::rule { "port-${name}":
+    shorewall::rule { "port-${name}":
         application => $application,
         proto       => $proto,
         port        => $port,

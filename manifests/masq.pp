@@ -1,6 +1,6 @@
 # ex: si ts=4 sw=4 et
 
-define shorewall::multi::masq (
+define shorewall::masq (
     $sources,
 ) {
 
