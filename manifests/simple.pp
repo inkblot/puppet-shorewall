@@ -1,12 +1,12 @@
 # ex: si ts=4 sw=4 et
 
 class shorewall::simple (
-    $ipv4         = $::shorewall::params::ipv4,
-    $ipv6         = $::shorewall::params::ipv6,
+    $ipv4         = true,
+    $ipv6         = false,
     $inet         = 'inet',
     $ipv4_tunnels = false,
     $ipv6_tunnels = false,
-) inherits shorewall::params {
+) {
 
     class { 'shorewall':
         ipv4         => $ipv4,

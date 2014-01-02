@@ -1,14 +1,16 @@
 # ex: si ts=4 sw=4 et
 
 class shorewall (
-    $ipv4            = $::shorewall::params::ipv4,
-    $ipv6            = $::shorewall::params::ipv6,
-    $ipv4_tunnels    = false,
-    $ipv6_tunnels    = false,
-    $default_policy  = 'REJECT',
-    $ip_forwarding   = false,
-    $traffic_control = false,
-) inherits shorewall::params {
+    $ipv4                = true,
+    $ipv6                = false,
+    $ipv4_tunnels        = false,
+    $ipv6_tunnels        = false,
+    $default_policy      = 'REJECT',
+    $ip_forwarding       = false,
+    $traffic_control     = false,
+    $maclist_ttl         = '',
+    $maclist_disposition = 'REJECT',
+) {
 
     File {
         ensure => present,
