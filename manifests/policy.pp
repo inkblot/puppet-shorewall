@@ -1,7 +1,7 @@
 # ex: si ts=4 sw=4 et
 
 define shorewall::policy (
-    $priority,
+    $priority  = '50',
     $source,
     $dest,
     $action,
