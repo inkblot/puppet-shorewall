@@ -7,6 +7,8 @@ define shorewall::port (
     $source,
     $action      = 'ACCEPT',
     $order       = '50',
+    $ipv4        = $::shorewall::ipv4,
+    $ipv6        = $::shorewall::ipv6,
 ) {
     shorewall::rule { "port-${name}":
         application => $application,
@@ -16,5 +18,7 @@ define shorewall::port (
         dest        => '$FW',
         action      => $action,
         order       => $order,
+        ipv4        => $ipv4,
+        ipv6        => $ipv6,
     }
 }

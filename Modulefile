@@ -1,5 +1,5 @@
 name    'inkblot/shorewall'
-version '3.0.0'
+version '3.0.1'
 source  'git://github.com/inkblot/puppet-shorewall'
 author  'inkblot'
 license 'Apache 2.0'
