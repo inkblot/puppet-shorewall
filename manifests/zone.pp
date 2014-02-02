@@ -3,7 +3,7 @@
 define shorewall::zone (
     $zone         = '',
     $parent_zones = [],
-    $proto        = 'ipv4',
+    $type         = 'ipv4',
     $options      = '-',
     $in_options   = '-',
     $out_options  = '-',
@@ -14,20 +14,18 @@ define shorewall::zone (
         default => $zone,
     }
 
-    case $proto {
-        'ipv4': {
-            concat::fragment { "zone-ipv4-${name}":
-                order   => $order,
-                target  => '/etc/shorewall/zones',
-                content => template('shorewall/zone.erb'),
-            }
+    if $type != 'ipv6' and $::shorewall::ipv4 {
+        concat::fragment { "zone-ipv4-${name}":
+            order   => $order,
+            target  => '/etc/shorewall/zones',
+            content => template('shorewall/zone.erb'),
         }
-        'ipv6': {
-            concat::fragment { "zone-ipv6-${name}":
-                order   => $order,
-                target  => '/etc/shorewall6/zones',
-                content => template('shorewall/zone.erb'),
-            }
+    }
+    if $type != 'ipv6' and $::shorewall::ipv6 {
+        concat::fragment { "zone-ipv6-${name}":
+            order   => $order,
+            target  => '/etc/shorewall6/zones',
+            content => template('shorewall/zone.erb'),
         }
     }
 }

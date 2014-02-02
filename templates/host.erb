@@ -1,2 +1,2 @@
 # <%= @name %>
-<%= @zone_name %> <%= @interface %>:<%= @addresses %><%= @exclusion.empty? ? '' : "!#{@exclusion}" %> <%= @options.join(',') %>
+<%= @zone_name %> <%= @interface %>:<%= @addresses %><%= @exclusion.empty? ? '' : "!#{@exclusion}" %> <%= Array(@options).join(',') %>
