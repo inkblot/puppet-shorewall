@@ -43,7 +43,7 @@ class shorewall (
                 '/etc/shorewall/hosts',
             ]:
             mode   => '0644',
-            notify => Exec['shorewall-reload'],
+            notify => Service['shorewall'],
         }
 
         # ipv4 zones
@@ -91,7 +91,7 @@ class shorewall (
         if $ipv4_tunnels {
             concat { '/etc/shorewall/tunnels':
                 mode   => '0644',
-                notify => Exec['shorewall-reload'],
+                notify => Service['shorewall'],
             }
 
             concat::fragment { 'tunnels-preamble':
@@ -102,7 +102,7 @@ class shorewall (
         } else {
             file { '/etc/shorewall/tunnels':
                 ensure => absent,
-                notify => Exec['shorewall-reload'],
+                notify => Service['shorewall'],
             }
         }
 
@@ -120,7 +120,7 @@ class shorewall (
                     '/etc/shorewall/tcrules',
                 ]:
                 mode   => '0644',
-                notify => Exec['shorewall-reload'],
+                notify => Service['shorewall'],
             }
 
             # ipv4 tc interfaces
@@ -157,12 +157,13 @@ class shorewall (
         file { '/etc/shorewall/shorewall.conf':
             ensure  => present,
             content => template('shorewall/shorewall.conf.erb'),
-            notify  => Exec['shorewall-reload'],
+            notify => Service['shorewall'],
         }
 
-        exec { 'shorewall-reload':
-            command     => '/etc/init.d/shorewall restart',
-            refreshonly => true,
+        service { 'shorewall':
+            ensure     => running,
+            hasrestart => true,
+            hasstatus  => true,
         }
     }
 
@@ -188,7 +189,7 @@ class shorewall (
                 '/etc/shorewall6/rules',
             ]:
             mode   => '0644',
-            notify => Exec['shorewall6-reload'],
+            notify => Service['shorewall6'],
         }
 
         # ip6 zones
@@ -229,7 +230,7 @@ class shorewall (
         if $ipv6_tunnels {
             concat { '/etc/shorewall6/tunnels':
                 mode   => '0644',
-                notify => Exec['shorewall6-reload'],
+                notify => Service['shorewall6'],
             }
 
             concat::fragment { 'tunnels6-preamble':
@@ -240,19 +241,20 @@ class shorewall (
         } else {
             file { '/etc/shorewall6/tunnels':
                 ensure => absent,
-                notify => Exec['shorewall6-reload'],
+                notify => Service['shorewall6'],
             }
         }
 
         # ip6 shorewall.conf
         file { '/etc/shorewall6/shorewall6.conf':
             ensure => present,
-            notify => Exec['shorewall6-reload'],
+            notify => Service['shorewall6'],
         }
 
-        exec { 'shorewall6-reload':
-            command     => '/etc/init.d/shorewall6 restart',
-            refreshonly => true,
+        service { 'shorewall6':
+            ensure     => running,
+            hasrestart => true,
+            hasstatus  => true,
         }
     }
 }
