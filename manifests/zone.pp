@@ -21,7 +21,7 @@ define shorewall::zone (
             content => template('shorewall/zone.erb'),
         }
     }
-    if $type != 'ipv6' and $::shorewall::ipv6 {
+    if $type != 'ipv4' and $::shorewall::ipv6 {
         concat::fragment { "zone-ipv6-${name}":
             order   => $order,
             target  => '/etc/shorewall6/zones',
