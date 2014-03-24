@@ -1,6 +1,7 @@
 # ex: si ts=4 sw=4 et
 
 define shorewall::blacklist (
+    $type         = 'ipv4',
     $address       = '',
     $proto         = '',
     $port          = '',
@@ -11,19 +12,29 @@ define shorewall::blacklist (
         validate_re($port, '^([0-9]+|-)$')
     }
 
-    if $::shorewall::ipv4 {
-        concat::fragment { "blacklist-ipv4-${name}":
+    if $type != 'ipv6' and $::shorewall::ipv4 {
+        $blacklist_filename = 'blrules'
+        if ($::shorewall_version < 40425) {
+            $blacklist_filename = 'blacklist'
+        }
+
+        concat::fragment { "${blacklist_filename}-ipv4-${name}":
             order   => $order,
-            target  => '/etc/shorewall/blacklist',
-            content => template('shorewall/blacklist.erb'),
+            target  => "/etc/shorewall/${blacklist_filename}",
+            content => template("shorewall/${blacklist_filename}.erb"),
         }
     }
 
-    if $::shorewall::ipv6 {
-        concat::fragment { "blacklist-ipv6-${name}":
+    if $type != 'ipv4' and $::shorewall::ipv6 {
+        $blacklist6_filename = 'blrules'
+        if ($::shorewall6_version < 40425) {
+            $blacklist6_filename = 'blacklist'
+        }
+
+        concat::fragment { "${blacklist6_filename}-ipv6-${name}":
             order   => $order,
-            target  => '/etc/shorewall6/blacklist',
-            content => template('shorewall/blacklist.erb'),
+            target  => "/etc/shorewall6/${blacklist6_filename}",
+            content => template("shorewall/${blacklist6_filename}.erb"),
         }
     }
 }

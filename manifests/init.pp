@@ -34,12 +34,17 @@ class shorewall (
             source => 'puppet:///modules/shorewall/etc/default/shorewall',
         }
 
+        $blacklist_filename = 'blrules'
+        if ($::shorewall_version < '40425') {
+            $blacklist_filename = 'blacklist'
+        }
+
         concat { [
                 '/etc/shorewall/zones',
                 '/etc/shorewall/interfaces',
                 '/etc/shorewall/policy',
                 '/etc/shorewall/rules',
-                '/etc/shorewall/blacklist',
+                "/etc/shorewall/${blacklist_filename}",
                 '/etc/shorewall/masq',
                 '/etc/shorewall/hosts',
             ]:
@@ -82,10 +87,10 @@ class shorewall (
         }
 
         # ipv4 blacklist
-        concat::fragment { 'blacklist-preamble':
+        concat::fragment { "${blacklist_filename}-preamble":
             order   => '01',
-            target  => '/etc/shorewall/blacklist',
-            content => "# This file is managed by puppet\n# Changes will be lost\n#ADDRESS/SUBNET         PROTOCOL        PORT    OPTIONS\n",
+            target  => "/etc/shorewall/${blacklist_filename}",
+            content => template("shorewall/${blacklist_filename}_header.erb"),
         }
 
         # ipv4 hosts
@@ -190,12 +195,17 @@ class shorewall (
             source => 'puppet:///modules/shorewall/etc/default/shorewall6',
         }
 
+        $blacklist6_filename = 'blrules'
+        if ($::shorewall6_version < '40425') {
+            $blacklist6_filename = 'blacklist'
+        }
+
         concat { [
                 '/etc/shorewall6/zones',
                 '/etc/shorewall6/interfaces',
                 '/etc/shorewall6/policy',
                 '/etc/shorewall6/rules',
-                '/etc/shorewall6/blacklist',
+                "/etc/shorewall6/${blacklist6_filename}",
             ]:
             mode   => '0644',
             notify => Service['shorewall6'],
@@ -227,7 +237,7 @@ class shorewall (
             target  => '/etc/shorewall6/policy',
             content => "# This file is managed by puppet\n# Changes will be lost\n",
         }
-    
+
         # ipv6 rules
         concat::fragment { 'rules6-preamble':
             order   => '00',
@@ -236,10 +246,10 @@ class shorewall (
         }
 
         # ipv6 blacklist
-        concat::fragment { 'blacklist6-preamble':
+        concat::fragment { "${blacklist6_filename}-ipv6-preamble":
             order   => '00',
-            target  => '/etc/shorewall6/blacklist',
-            content => "# This file is managed by puppet\n# Changes will be lost\n#ADDRESS/SUBNET         PROTOCOL        PORT    OPTIONS\n",
+            target  => "/etc/shorewall6/${blacklist6_filename}",
+            content => template("shorewall/${blacklist6_filename}_header.erb"),
         }
 
         # ipv6 tunnels
