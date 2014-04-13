@@ -1,0 +1,13 @@
+# This file is managed by Puppet - changes will be lost
+
+#
+# Shorewall/Shorewall6 version 4 - Blacklist File
+#
+# For information about entries in this file, type "man shorewall-blrules" or "man shorewall6-blrules"
+#
+# Please see http://shorewall.net/blacklisting_support.htm for additional
+# information.
+#
+###########################################################################################################################################################################
+#ACTION         SOURCE          DEST            PROTO   DEST    SOURCE          ORIGINAL        RATE            USER/   MARK    CONNLIMIT       TIME       HEADERS   SWITCH
+#                                                       PORT    PORT(S)         DEST            LIMIT           GROUP

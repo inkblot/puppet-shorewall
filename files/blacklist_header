@@ -1,0 +1,14 @@
+# This file is managed by Puppet - changes will be lost
+
+#
+# Shorewall/Shorewall 6 version 4 - Blacklist File
+#
+# For information about entries in this file, type "man shorewall-blacklist" or "man shorewall6-blacklist"
+#
+# Please see http://shorewall.net/blacklisting_support.htm for additional
+# information.
+#
+###############################################################################
+#ADDRESS/SUBNET		PROTOCOL	PORT	OPTIONS
+
+

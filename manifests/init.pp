@@ -34,11 +34,18 @@ class shorewall (
             source => 'puppet:///modules/shorewall/etc/default/shorewall',
         }
 
+        if ($::shorewall_version < '40425') {
+            $blacklist_filename = 'blacklist'
+        } else {
+            $blacklist_filename = 'blrules'
+        }
+
         concat { [
                 '/etc/shorewall/zones',
                 '/etc/shorewall/interfaces',
                 '/etc/shorewall/policy',
                 '/etc/shorewall/rules',
+                "/etc/shorewall/${blacklist_filename}",
                 '/etc/shorewall/masq',
                 '/etc/shorewall/hosts',
             ]:
@@ -78,6 +85,13 @@ class shorewall (
             order   => '00',
             target  => '/etc/shorewall/rules',
             content => "# This file is managed by puppet\n# Changes will be lost\n",
+        }
+
+        # ipv4 blacklist
+        concat::fragment { "${blacklist_filename}-preamble":
+            order   => '01',
+            target  => "/etc/shorewall/${blacklist_filename}",
+            source  => "puppet:///modules/shorewall/${blacklist_filename}_header"),
         }
 
         # ipv4 hosts
@@ -182,17 +196,24 @@ class shorewall (
             source => 'puppet:///modules/shorewall/etc/default/shorewall6',
         }
 
+        if ($::shorewall6_version < '40425') {
+            $blacklist6_filename = 'blacklist'
+        } else {
+            $blacklist6_filename = 'blrules'
+        }
+
         concat { [
                 '/etc/shorewall6/zones',
                 '/etc/shorewall6/interfaces',
                 '/etc/shorewall6/policy',
                 '/etc/shorewall6/rules',
+                "/etc/shorewall6/${blacklist6_filename}",
             ]:
             mode   => '0644',
             notify => Service['shorewall6'],
         }
 
-        # ip6 zones
+        # ipv6 zones
         concat::fragment { 'zones6-preamble':
             order   => '00',
             target  => '/etc/shorewall6/zones',
@@ -205,25 +226,32 @@ class shorewall (
             content => "local firewall\n",
         }
 
-        # ip6 interfaces
+        # ipv6 interfaces
         concat::fragment { 'interfaces6-preamble':
             order   => '00',
             target  => '/etc/shorewall6/interfaces',
             content => "# This file is managed by puppet\n# Changes will be lost\n",
         }
 
-        # ip6 policy (default DROP)
+        # ipv6 policy (default DROP)
         concat::fragment { 'policy6-preamble':
             order   => 'a-00',
             target  => '/etc/shorewall6/policy',
             content => "# This file is managed by puppet\n# Changes will be lost\n",
         }
-    
-        # ip6 rules
+
+        # ipv6 rules
         concat::fragment { 'rules6-preamble':
             order   => '00',
             target  => '/etc/shorewall6/rules',
             content => "# This file is managed by puppet\n# Changes will be lost\n",
+        }
+
+        # ipv6 blacklist
+        concat::fragment { "${blacklist6_filename}-ipv6-preamble":
+            order   => '00',
+            target  => "/etc/shorewall6/${blacklist6_filename}",
+            source  => "puppet:///modules/shorewall/${blacklist_filename}_header"),
         }
 
         # ipv6 tunnels
@@ -245,7 +273,7 @@ class shorewall (
             }
         }
 
-        # ip6 shorewall.conf
+        # ipv6 shorewall.conf
         file { '/etc/shorewall6/shorewall6.conf':
             ensure => present,
             notify => Service['shorewall6'],
