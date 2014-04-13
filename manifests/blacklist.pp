@@ -13,9 +13,10 @@ define shorewall::blacklist (
     }
 
     if $type != 'ipv6' and $::shorewall::ipv4 {
-        $blacklist_filename = 'blrules'
         if ($::shorewall_version < 40425) {
             $blacklist_filename = 'blacklist'
+        } else {
+            $blacklist_filename = 'blrules'
         }
 
         concat::fragment { "${blacklist_filename}-ipv4-${name}":
@@ -26,9 +27,10 @@ define shorewall::blacklist (
     }
 
     if $type != 'ipv4' and $::shorewall::ipv6 {
-        $blacklist6_filename = 'blrules'
         if ($::shorewall6_version < 40425) {
             $blacklist6_filename = 'blacklist'
+        } else {
+            $blacklist6_filename = 'blrules'
         }
 
         concat::fragment { "${blacklist6_filename}-ipv6-${name}":

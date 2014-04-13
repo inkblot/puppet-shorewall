@@ -196,9 +196,10 @@ class shorewall (
             source => 'puppet:///modules/shorewall/etc/default/shorewall6',
         }
 
-        $blacklist6_filename = 'blrules'
         if ($::shorewall6_version < '40425') {
             $blacklist6_filename = 'blacklist'
+        } else {
+            $blacklist6_filename = 'blrules'
         }
 
         concat { [
