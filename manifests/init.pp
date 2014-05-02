@@ -91,7 +91,7 @@ class shorewall (
         concat::fragment { "${blacklist_filename}-preamble":
             order   => '01',
             target  => "/etc/shorewall/${blacklist_filename}",
-            source  => "puppet:///modules/shorewall/${blacklist_filename}_header"),
+            source  => "puppet:///modules/shorewall/${blacklist_filename}_header",
         }
 
         # ipv4 hosts
@@ -251,7 +251,7 @@ class shorewall (
         concat::fragment { "${blacklist6_filename}-ipv6-preamble":
             order   => '00',
             target  => "/etc/shorewall6/${blacklist6_filename}",
-            source  => "puppet:///modules/shorewall/${blacklist_filename}_header"),
+            source  => "puppet:///modules/shorewall/${blacklist_filename}_header",
         }
 
         # ipv6 tunnels
