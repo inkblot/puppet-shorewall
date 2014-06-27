@@ -10,6 +10,8 @@ class shorewall (
     $traffic_control     = false,
     $maclist_ttl         = '',
     $maclist_disposition = 'REJECT',
+    $log_martians        = true,
+    $route_filter        = true,
 ) {
 
     File {

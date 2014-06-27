@@ -23,7 +23,7 @@ VERBOSITY=1
 
 BLACKLIST_LOGLEVEL=
 
-LOG_MARTIANS=Yes
+LOG_MARTIANS=<%= @log_martians ? 'Yes' : 'No' %>
 
 LOG_VERBOSITY=2
 
@@ -174,7 +174,7 @@ RESTORE_DEFAULT_ROUTE=Yes
 
 RETAIN_ALIASES=No
 
-ROUTE_FILTER=Yes
+ROUTE_FILTER=<%= @route_filter ? 'Yes' : 'No' %>
 
 SAVE_IPSETS=No
 
