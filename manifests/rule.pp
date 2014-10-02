@@ -15,7 +15,7 @@ define shorewall::rule (
 ) {
     if $application == '' {
         validate_re($proto, '^([0-9]+|tcp|udp|-)$')
-        validate_re($port, '^([0-9]+|-)$')
+        validate_re($port, ['^[0-9]+$', '^-$', '^[0-9]+:[0-9]+$'])
     } else {
         validate_re($application, '^[[:alnum:]]+$')
         validate_re($proto, '^-?$')
