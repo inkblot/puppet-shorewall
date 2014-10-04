@@ -9,7 +9,7 @@ define shorewall::policy (
     $ipv4      = $::shorewall::ipv4,
     $ipv6      = $::shorewall::ipv6,
 ) {
-    validate_re($priority, ['^\d+$','last'], 'Valid values for $priority are any integer or \'last\'.')
+    validate_re($priority, ['^\d+$','last'], "Valid values for $priority are any integer or 'last'.")
 
     if $priority == 'last' {
         $order = 'q-last'
