@@ -286,6 +286,7 @@ class shorewall (
         # ipv6 shorewall.conf
         file { '/etc/shorewall6/shorewall6.conf':
             ensure => present,
+            content => template('shorewall/shorewall6.conf.erb'),
             notify => Service['shorewall6'],
         }
 
