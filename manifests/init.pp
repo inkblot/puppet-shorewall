@@ -49,6 +49,7 @@ class shorewall (
                 '/etc/shorewall/rules',
                 "/etc/shorewall/${blacklist_filename}",
                 '/etc/shorewall/masq',
+                '/etc/shorewall/proxyarp',
                 '/etc/shorewall/hosts',
             ]:
             mode   => '0644',
@@ -126,6 +127,13 @@ class shorewall (
         concat::fragment { 'masq-preamble':
             order   => '00',
             target  => '/etc/shorewall/masq',
+            content => "# This file is managed by puppet\n# Changes will be lost\n",
+        }
+
+        # ipv4 proxyarp
+        concat::fragment { 'proxyarp-preamble':
+            order   => '00',
+            target  => '/etc/shorewall/proxyarp',
             content => "# This file is managed by puppet\n# Changes will be lost\n",
         }
 
