@@ -12,16 +12,18 @@
 STARTUP_ENABLED=Yes
 
 ###############################################################################
-#		              V E R B O S I T Y
+#			     V E R B O S I T Y
 ###############################################################################
 
 VERBOSITY=1
 
 ###############################################################################
-#		                L O G G I N G
+#			       L O G G I N G
 ###############################################################################
 
-BLACKLIST_LOGLEVEL=
+BLACKLIST_LOG_LEVEL=
+
+INVALID_LOG_LEVEL=
 
 LOG_MARTIANS=<%= @log_martians ? 'Yes' : 'No' %>
 
@@ -39,6 +41,10 @@ LOGLIMIT=
 
 MACLIST_LOG_LEVEL=info
 
+RELATED_LOG_LEVEL=
+
+RPFILTER_LOG_LEVEL=info
+
 SFILTER_LOG_LEVEL=info
 
 SMURF_LOG_LEVEL=info
@@ -47,11 +53,17 @@ STARTUP_LOG=/var/log/shorewall-init.log
 
 TCP_FLAGS_LOG_LEVEL=info
 
+UNTRACKED_LOG_LEVEL=
+
 ###############################################################################
 #	L O C A T I O N	  O F	F I L E S   A N D   D I R E C T O R I E S
 ###############################################################################
 
-CONFIG_PATH="/etc/shorewall:/usr/share/shorewall"
+ARPTABLES=
+
+CONFIG_PATH="${CONFDIR}/shorewall:${SHAREDIR}/shorewall"
+
+GEOIPDIR=/usr/share/xt_geoip/LE
 
 IPTABLES=
 
@@ -59,7 +71,11 @@ IP=
 
 IPSET=
 
+LOCKFILE=
+
 MODULESDIR=
+
+NFACCT=
 
 PATH="/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin:/usr/local/sbin"
 
@@ -69,7 +85,7 @@ RESTOREFILE=restore
 
 SHOREWALL_SHELL=/bin/sh
 
-SUBSYSLOCK=""
+SUBSYSLOCK=
 
 TC=
 
@@ -84,7 +100,7 @@ QUEUE_DEFAULT=none
 REJECT_DEFAULT=Reject
 
 ###############################################################################
-#                        R S H / R C P  C O M M A N D S
+#			 R S H / R C P	C O M M A N D S
 ###############################################################################
 
 RCP_COMMAND='scp ${files} ${root}@${system}:${destination}'
@@ -104,17 +120,27 @@ ADD_SNAT_ALIASES=No
 
 ADMINISABSENTMINDED=Yes
 
-AUTO_COMMENT=Yes
+BASIC_FILTERS=No
+
+IGNOREUNKNOWNVARIABLES=No
+
+AUTOCOMMENT=Yes
+
+AUTOHELPERS=Yes
 
 AUTOMAKE=No
 
-BLACKLISTNEWONLY=Yes
+BLACKLIST="NEW,INVALID,UNTRACKED"
+
+CHAIN_SCRIPTS=Yes
 
 CLAMPMSS=No
 
 CLEAR_TC=Yes
 
 COMPLETE=No
+
+DEFER_DNS_RESOLUTION=Yes
 
 DELETE_THEN_ADD=Yes
 
@@ -134,9 +160,13 @@ FASTACCEPT=No
 
 FORWARD_CLEAR_MARK=
 
+HELPERS=
+
 IMPLICIT_CONTINUE=No
 
-HIGH_ROUTE_MARKS=No
+INLINE_MATCHES=Yes
+
+IPSET_WARNINGS=Yes
 
 IP_FORWARDING=<%= @ip_forwarding ? 'Yes' : 'No' %>
 
@@ -144,7 +174,7 @@ KEEP_RT_TABLES=No
 
 LEGACY_FASTSTART=Yes
 
-LOAD_HELPERS_ONLY=No
+LOAD_HELPERS_ONLY=Yes
 
 MACLIST_TABLE=filter
 
@@ -168,13 +198,19 @@ OPTIMIZE=0
 
 OPTIMIZE_ACCOUNTING=No
 
+REJECT_ACTION=
+
 REQUIRE_INTERFACE=No
 
 RESTORE_DEFAULT_ROUTE=Yes
 
+RESTORE_ROUTEMARKS=Yes
+
 RETAIN_ALIASES=No
 
 ROUTE_FILTER=<%= @route_filter ? 'Yes' : 'No' %>
+
+SAVE_ARPTABLES=No
 
 SAVE_IPSETS=No
 
@@ -186,11 +222,17 @@ TC_PRIOMAP="2 3 3 3 2 3 1 1 2 2 2 2 2 2 2 2"
 
 TRACK_PROVIDERS=No
 
-USE_DEFAULT_RT=No
+TRACK_RULES=No
 
-WIDE_TC_MARKS=No
+USE_DEFAULT_RT=Yes
 
-ZONE2ZONE=2
+USE_PHYSICAL_NAMES=No
+
+USE_RT_NAMES=No
+
+WARNOLDCAPVERSION=Yes
+
+ZONE2ZONE=-
 
 ###############################################################################
 #			P A C K E T   D I S P O S I T I O N
@@ -198,7 +240,13 @@ ZONE2ZONE=2
 
 BLACKLIST_DISPOSITION=DROP
 
+INVALID_DISPOSITION=CONTINUE
+
 MACLIST_DISPOSITION=<%= @maclist_disposition %>
+
+RELATED_DISPOSITION=ACCEPT
+
+RPFILTER_DISPOSITION=DROP
 
 SMURF_DISPOSITION=DROP
 
@@ -206,9 +254,25 @@ SFILTER_DISPOSITION=DROP
 
 TCP_FLAGS_DISPOSITION=DROP
 
+UNTRACKED_DISPOSITION=CONTINUE
+
 ################################################################################
-#                            L E G A C Y  O P T I O N
-#                      D O  N O T  D E L E T E  O R  A L T E R
+#			P A C K E T  M A R K  L A Y O U T
+################################################################################
+
+TC_BITS=
+
+PROVIDER_BITS=
+
+PROVIDER_OFFSET=
+
+MASK_BITS=
+
+ZONE_BITS=0
+
+################################################################################
+#			     L E G A C Y  O P T I O N
+#		       D O  N O T  D E L E T E	O R  A L T E R
 ################################################################################
 
 IPSECFILE=zones
