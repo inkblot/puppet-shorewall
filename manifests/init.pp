@@ -12,7 +12,7 @@ class shorewall (
     $maclist_disposition = 'REJECT',
     $log_martians        = true,
     $route_filter        = true,
-    $blacklist = ["NEW","INVALID","UNTRACKED"]
+    $blacklist           = ["NEW","INVALID","UNTRACKED"]
 ) {
 
     File {
@@ -88,7 +88,7 @@ class shorewall (
         concat::fragment { 'rules-preamble':
             order   => '00',
             target  => '/etc/shorewall/rules',
-            content => "# This file is managed by puppet\n# Changes will be lost\n",
+            content => "# This file is managed by puppet\n# Changes will be lost\n?SECTION NEW\n",
         }
 
         # ipv4 blacklist
@@ -255,7 +255,7 @@ class shorewall (
         concat::fragment { 'rules6-preamble':
             order   => '00',
             target  => '/etc/shorewall6/rules',
-            content => "# This file is managed by puppet\n# Changes will be lost\n",
+            content => "# This file is managed by puppet\n# Changes will be lost\n?SECTION NEW\n",
         }
 
         # ipv6 blacklist
