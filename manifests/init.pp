@@ -12,6 +12,7 @@ class shorewall (
     $maclist_disposition = 'REJECT',
     $log_martians        = true,
     $route_filter        = true,
+    $blacklist = ["NEW","INVALID","UNTRACKED"]
 ) {
 
     File {
