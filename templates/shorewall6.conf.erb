@@ -1,10 +1,11 @@
 ###############################################################################
 #
-#  Shorewall Version 4 -- /etc/shorewall/shorewall.conf
+#  Shorewall Version 4 -- /etc/shorewall6/shorewall6.conf
 #
-#  For information about the settings in this file, type "man shorewall.conf"
+#  For information about the settings in this file, type "man shorewall6.conf"
 #
-#  Manpage also online at http://www.shorewall.net/manpages/shorewall.conf.html
+#  Manpage also online at
+#  http://www.shorewall.net/manpages6/shorewall6.conf.html
 ###############################################################################
 #		       S T A R T U P   E N A B L E D
 ###############################################################################
@@ -25,8 +26,6 @@ BLACKLIST_LOG_LEVEL=
 
 INVALID_LOG_LEVEL=
 
-LOG_MARTIANS=<%= @log_martians ? 'Yes' : 'No' %>
-
 LOG_VERBOSITY=2
 
 LOGALLNEW=
@@ -35,9 +34,9 @@ LOGFILE=/var/log/messages
 
 LOGFORMAT="Shorewall:%s:%s:"
 
-LOGTAGONLY=No
-
 LOGLIMIT=
+
+LOGTAGONLY=No
 
 MACLIST_LOG_LEVEL=info
 
@@ -49,7 +48,7 @@ SFILTER_LOG_LEVEL=info
 
 SMURF_LOG_LEVEL=info
 
-STARTUP_LOG=/var/log/shorewall-init.log
+STARTUP_LOG=/var/log/shorewall6-init.log
 
 TCP_FLAGS_LOG_LEVEL=info
 
@@ -59,13 +58,11 @@ UNTRACKED_LOG_LEVEL=
 #	L O C A T I O N	  O F	F I L E S   A N D   D I R E C T O R I E S
 ###############################################################################
 
-ARPTABLES=
-
-CONFIG_PATH="${CONFDIR}/shorewall:${SHAREDIR}/shorewall"
+CONFIG_PATH="${CONFDIR}/shorewall6:/usr/share/shorewall6:${SHAREDIR}/shorewall"
 
 GEOIPDIR=/usr/share/xt_geoip/LE
 
-IPTABLES=
+IP6TABLES=
 
 IP=
 
@@ -77,9 +74,9 @@ MODULESDIR=
 
 NFACCT=
 
-PATH="/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin:/usr/local/sbin"
-
 PERL=/usr/bin/perl
+
+PATH="/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin:/usr/local/sbin"
 
 RESTOREFILE=restore
 
@@ -114,10 +111,6 @@ ACCOUNTING=Yes
 
 ACCOUNTING_TABLE=filter
 
-ADD_IP_ALIASES=No
-
-ADD_SNAT_ALIASES=No
-
 ADMINISABSENTMINDED=Yes
 
 BASIC_FILTERS=No
@@ -136,17 +129,13 @@ CHAIN_SCRIPTS=Yes
 
 CLAMPMSS=No
 
-CLEAR_TC=Yes
+CLEAR_TC=No
 
 COMPLETE=No
 
 DEFER_DNS_RESOLUTION=Yes
 
 DELETE_THEN_ADD=Yes
-
-DETECT_DNAT_IPADDRS=No
-
-DISABLE_IPV6=No
 
 DONT_LOAD=
 
@@ -158,7 +147,7 @@ EXPORTMODULES=Yes
 
 FASTACCEPT=No
 
-FORWARD_CLEAR_MARK=
+FORWARD_CLEAR_MARK=Yes
 
 HELPERS=
 
@@ -170,9 +159,9 @@ IPSET_WARNINGS=Yes
 
 IP_FORWARDING=<%= @ip_forwarding ? 'Yes' : 'No' %>
 
-KEEP_RT_TABLES=No
+KEEP_RT_TABLES=Yes
 
-LEGACY_FASTSTART=Yes
+LEGACY_FASTSTART=No
 
 LOAD_HELPERS_ONLY=Yes
 
@@ -182,19 +171,13 @@ MACLIST_TTL=<%= @maclist_ttl %>
 
 MANGLE_ENABLED=Yes
 
-MAPOLDACTIONS=No
-
 MARK_IN_FORWARD_CHAIN=No
 
 MODULE_SUFFIX=ko
 
-MULTICAST=No
-
 MUTEX_TIMEOUT=60
 
-NULL_ROUTE_RFC1918=No
-
-OPTIMIZE=0
+OPTIMIZE=1
 
 OPTIMIZE_ACCOUNTING=No
 
@@ -202,19 +185,9 @@ REJECT_ACTION=
 
 REQUIRE_INTERFACE=No
 
-RESTORE_DEFAULT_ROUTE=Yes
-
 RESTORE_ROUTEMARKS=Yes
 
-RETAIN_ALIASES=No
-
-ROUTE_FILTER=<%= @route_filter ? 'Yes' : 'No' %>
-
-SAVE_ARPTABLES=No
-
-SAVE_IPSETS=No
-
-TC_ENABLED=<%= @traffic_control ? 'Simple' : 'Internal' %>
+TC_ENABLED=No
 
 TC_EXPERT=No
 
@@ -246,11 +219,11 @@ MACLIST_DISPOSITION=<%= @maclist_disposition %>
 
 RELATED_DISPOSITION=ACCEPT
 
+SFILTER_DISPOSITION=DROP
+
 RPFILTER_DISPOSITION=DROP
 
 SMURF_DISPOSITION=DROP
-
-SFILTER_DISPOSITION=DROP
 
 TCP_FLAGS_DISPOSITION=DROP
 
@@ -269,10 +242,3 @@ PROVIDER_OFFSET=
 MASK_BITS=
 
 ZONE_BITS=0
-
-################################################################################
-#			     L E G A C Y  O P T I O N
-#		       D O  N O T  D E L E T E	O R  A L T E R
-################################################################################
-
-IPSECFILE=zones

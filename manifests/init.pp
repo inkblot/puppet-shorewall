@@ -12,6 +12,7 @@ class shorewall (
     $maclist_disposition = 'REJECT',
     $log_martians        = true,
     $route_filter        = true,
+    $blacklist           = ["NEW","INVALID","UNTRACKED"]
 ) {
 
     File {
@@ -49,6 +50,7 @@ class shorewall (
                 '/etc/shorewall/rules',
                 "/etc/shorewall/${blacklist_filename}",
                 '/etc/shorewall/masq',
+                '/etc/shorewall/proxyarp',
                 '/etc/shorewall/hosts',
             ]:
             mode   => '0644',
@@ -86,7 +88,7 @@ class shorewall (
         concat::fragment { 'rules-preamble':
             order   => '00',
             target  => '/etc/shorewall/rules',
-            content => "# This file is managed by puppet\n# Changes will be lost\n",
+            content => "# This file is managed by puppet\n# Changes will be lost\n?SECTION NEW\n",
         }
 
         # ipv4 blacklist
@@ -126,6 +128,13 @@ class shorewall (
         concat::fragment { 'masq-preamble':
             order   => '00',
             target  => '/etc/shorewall/masq',
+            content => "# This file is managed by puppet\n# Changes will be lost\n",
+        }
+
+        # ipv4 proxyarp
+        concat::fragment { 'proxyarp-preamble':
+            order   => '00',
+            target  => '/etc/shorewall/proxyarp',
             content => "# This file is managed by puppet\n# Changes will be lost\n",
         }
 
@@ -246,7 +255,7 @@ class shorewall (
         concat::fragment { 'rules6-preamble':
             order   => '00',
             target  => '/etc/shorewall6/rules',
-            content => "# This file is managed by puppet\n# Changes will be lost\n",
+            content => "# This file is managed by puppet\n# Changes will be lost\n?SECTION NEW\n",
         }
 
         # ipv6 blacklist
@@ -278,6 +287,7 @@ class shorewall (
         # ipv6 shorewall.conf
         file { '/etc/shorewall6/shorewall6.conf':
             ensure => present,
+            content => template('shorewall/shorewall6.conf.erb'),
             notify => Service['shorewall6'],
         }
 
