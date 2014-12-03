@@ -88,7 +88,14 @@ class shorewall (
         concat::fragment { 'rules-preamble':
             order   => '00',
             target  => '/etc/shorewall/rules',
-            content => "# This file is managed by puppet\n# Changes will be lost\n?SECTION NEW\n",
+            content => "# This file is managed by puppet\n# Changes will be lost\n",
+        }
+
+        # ipv4 rules SECTION NEW
+        concat::fragment { 'rules-section-new':
+            order   => '01',
+            target  => '/etc/shorewall/rules',
+            content => template('shorewall/rules-section-new.erb'),
         }
 
         # ipv4 blacklist
@@ -248,7 +255,14 @@ class shorewall (
         concat::fragment { 'rules6-preamble':
             order   => '00',
             target  => '/etc/shorewall6/rules',
-            content => "# This file is managed by puppet\n# Changes will be lost\n?SECTION NEW\n",
+            content => "# This file is managed by puppet\n# Changes will be lost\n?",
+        }
+
+        # ipv6 rules SECTION NEW
+        concat::fragment { 'rules6-section-new':
+            order   => '01',
+            target  => '/etc/shorewall6/rules',
+            content => template('shorewall/rules-section-new.erb'),
         }
 
         # ipv6 blacklist
