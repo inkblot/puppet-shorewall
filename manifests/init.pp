@@ -255,7 +255,7 @@ class shorewall (
         concat::fragment { 'rules6-preamble':
             order   => '00',
             target  => '/etc/shorewall6/rules',
-            content => "# This file is managed by puppet\n# Changes will be lost\n?",
+            content => "# This file is managed by puppet\n# Changes will be lost\n",
         }
 
         # ipv6 rules SECTION NEW
