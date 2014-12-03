@@ -88,7 +88,14 @@ class shorewall (
         concat::fragment { 'rules-preamble':
             order   => '00',
             target  => '/etc/shorewall/rules',
-            content => "# This file is managed by puppet\n# Changes will be lost\n?SECTION NEW\n",
+            content => "# This file is managed by puppet\n# Changes will be lost\n",
+        }
+
+        # ipv4 rules SECTION NEW
+        concat::fragment { 'rules-section-new':
+            order   => '01',
+            target  => '/etc/shorewall/rules',
+            content => template('shorewall/rules-section-new.erb'),
         }
 
         # ipv4 blacklist
@@ -178,13 +185,6 @@ class shorewall (
             }
         }
 
-        # ipv4 shorewall.conf
-        file { '/etc/shorewall/shorewall.conf':
-            ensure  => present,
-            content => template('shorewall/shorewall.conf.erb'),
-            notify => Service['shorewall'],
-        }
-
         service { 'shorewall':
             ensure     => running,
             hasrestart => true,
@@ -255,7 +255,14 @@ class shorewall (
         concat::fragment { 'rules6-preamble':
             order   => '00',
             target  => '/etc/shorewall6/rules',
-            content => "# This file is managed by puppet\n# Changes will be lost\n?SECTION NEW\n",
+            content => "# This file is managed by puppet\n# Changes will be lost\n?",
+        }
+
+        # ipv6 rules SECTION NEW
+        concat::fragment { 'rules6-section-new':
+            order   => '01',
+            target  => '/etc/shorewall6/rules',
+            content => template('shorewall/rules-section-new.erb'),
         }
 
         # ipv6 blacklist
@@ -284,17 +291,30 @@ class shorewall (
             }
         }
 
-        # ipv6 shorewall.conf
-        file { '/etc/shorewall6/shorewall6.conf':
-            ensure => present,
-            content => template('shorewall/shorewall6.conf.erb'),
-            notify => Service['shorewall6'],
-        }
-
         service { 'shorewall6':
             ensure     => running,
             hasrestart => true,
             hasstatus  => true,
         }
+    }
+
+    shorewall::config {"IP_FORWARDING":
+        value => $ip_forwarding ? { true => "Yes", false => "No" },
+    }
+    shorewall::config {"LOG_MARTIANS":
+        value => $log_martians ? { true => "Yes", false => "No" },
+    }
+    shorewall::config {"MACLIST_TTL":
+        value => $maclist_ttl,
+    }
+    shorewall::config {"MACLIST_DISPOSITION":
+        value => $maclist_disposition,
+    }
+    shorewall::config {"TC_ENABLED":
+        value => $traffic_control ? { true => "Simple", false => "Internal" },
+    }
+    shorewall::config {"ROUTE_FILTER":
+        value => $route_filter ? { true => "Yes", false => "No" },
+        ipv6 => false,
     }
 }
