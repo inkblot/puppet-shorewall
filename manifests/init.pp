@@ -52,6 +52,7 @@ class shorewall (
                 '/etc/shorewall/masq',
                 '/etc/shorewall/proxyarp',
                 '/etc/shorewall/hosts',
+                '/etc/shorewall/mangle',
             ]:
             mode   => '0644',
             notify => Service['shorewall'],
@@ -142,6 +143,13 @@ class shorewall (
         concat::fragment { 'proxyarp-preamble':
             order   => '00',
             target  => '/etc/shorewall/proxyarp',
+            content => "# This file is managed by puppet\n# Changes will be lost\n",
+        }
+
+        # ipv4 mangle
+        concat::fragment { 'mangle-preamble':
+            order   => '00',
+            target  => '/etc/shorewall/mangle',
             content => "# This file is managed by puppet\n# Changes will be lost\n",
         }
 
