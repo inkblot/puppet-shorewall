@@ -52,7 +52,7 @@ class shorewall (
                 '/etc/shorewall/masq',
                 '/etc/shorewall/proxyarp',
                 '/etc/shorewall/hosts',
-                '/etc/shorewall/mangle',
+                '/etc/shorewall/tcrules',
             ]:
             mode   => '0644',
             notify => Service['shorewall'],
@@ -146,10 +146,10 @@ class shorewall (
             content => "# This file is managed by puppet\n# Changes will be lost\n",
         }
 
-        # ipv4 mangle
-        concat::fragment { 'mangle-preamble':
+        # ipv4 tc rules
+        concat::fragment { 'tcrules-preamble':
             order   => '00',
-            target  => '/etc/shorewall/mangle',
+            target  => '/etc/shorewall/tcrules',
             content => "# This file is managed by puppet\n# Changes will be lost\n",
         }
 
@@ -157,7 +157,6 @@ class shorewall (
             concat { [
                     '/etc/shorewall/tcinterfaces',
                     '/etc/shorewall/tcpri',
-                    '/etc/shorewall/tcrules',
                 ]:
                 mode   => '0644',
                 notify => Service['shorewall'],
@@ -176,18 +175,10 @@ class shorewall (
                 target  => '/etc/shorewall/tcpri',
                 content => "# This file is managed by puppet\n# Changes will be lost\n",
             }
-
-            # ipv4 tc rules
-            concat::fragment { 'tcrules-preamble':
-                order   => '00',
-                target  => '/etc/shorewall/tcrules',
-                content => "# This file is managed by puppet\n# Changes will be lost\n",
-            }
         } else {
             file { [
                     '/etc/shorewall/tcinterfaces',
                     '/etc/shorewall/tcpri',
-                    '/etc/shorewall/tcrules',
                 ]:
                 ensure => absent,
             }

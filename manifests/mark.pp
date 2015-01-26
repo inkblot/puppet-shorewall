@@ -10,7 +10,7 @@ define shorewall::mark (
 ) {
     concat::fragment { "mark-${source}-${dest}-${proto}-${port}":
         order   => $priority,
-        target  => '/etc/shorewall/mangle',
-        content => "MARK(${value}) ${source} ${dest} ${proto} ${port}\n",
+        target  => '/etc/shorewall/tcrules',
+        content => "${value} ${source} ${dest} ${proto} ${port}\n",
     }
 }
