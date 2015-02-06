@@ -38,8 +38,9 @@ class shorewall::simple (
         action   => $default_policy,
     }
 
-    shorewall::port {
+    shorewall::port { 'port-ping-accept':
         application => 'Ping',
         action      => 'ACCEPT',
+        source      => $inet,
     }
 }
