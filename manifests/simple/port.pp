@@ -2,11 +2,10 @@
 
 define shorewall::simple::port (
     $proto,
-    $port,
 ) {
-    shorewall::port { $name:
+    shorewall::port { "port-${name}-proto":
         proto  => $proto,
-        port   => $port,
-        source => $shorewall::simple::inet,
+        port   => $name,
+        source => $::shorewall::simple::inet,
     }
 }
