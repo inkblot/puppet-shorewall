@@ -1,0 +1,7 @@
+<%-
+@dest_ports << '-' if @dest_ports.empty? unless @source_ports.empty?
+@proto = '-' if @proto.empty? unless @dest_ports.empty?
+@options << '-' if @options.empty? unless @proto.empty?
+@hosts << '-' if @hosts.empty? unless @options.empty?
+-%>
+<%= @name %> <%= @hosts.join('-') %> <%= @options.join(',') %> <%= @proto %> <%= @dest_ports.join(',') %> <%= @source_ports.join(',') %>

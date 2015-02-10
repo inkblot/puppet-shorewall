@@ -53,6 +53,7 @@ class shorewall (
                 '/etc/shorewall/proxyarp',
                 '/etc/shorewall/hosts',
                 '/etc/shorewall/tcrules',
+                '/etc/shorewall/routestopped',
             ]:
             mode   => '0644',
             notify => Service['shorewall'],
@@ -153,6 +154,13 @@ class shorewall (
             content => "# This file is managed by puppet\n# Changes will be lost\n",
         }
 
+        # ipv4 routestopped
+        concat::fragment { 'routestopped-preamble':
+            order   => '00',
+            target  => '/etc/shorewall/routestopped',
+            content => "# This file is managed by puppet\n# Changes will be lost\n",
+        }
+
         if $traffic_control {
             concat { [
                     '/etc/shorewall/tcinterfaces',
@@ -218,6 +226,7 @@ class shorewall (
                 '/etc/shorewall6/policy',
                 '/etc/shorewall6/rules',
                 "/etc/shorewall6/${blacklist6_filename}",
+                '/etc/shorewall6/routestopped',
             ]:
             mode   => '0644',
             notify => Service['shorewall6'],
@@ -288,6 +297,13 @@ class shorewall (
                 ensure => absent,
                 notify => Service['shorewall6'],
             }
+        }
+
+        # ipv6 routestopped
+        concat::fragment { 'routestopped6-preamble':
+            order   => '00',
+            target  => '/etc/shorewall6/routestopped',
+            content => "# This file is managed by puppet\n# Changes will be lost\n",
         }
 
         service { 'shorewall6':
