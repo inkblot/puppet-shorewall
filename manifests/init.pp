@@ -5,7 +5,6 @@ class shorewall (
     $ipv6                = false,
     $ipv4_tunnels        = false,
     $ipv6_tunnels        = false,
-    $default_policy      = 'REJECT',
     $ip_forwarding       = false,
     $traffic_control     = false,
     $maclist_ttl         = '',
