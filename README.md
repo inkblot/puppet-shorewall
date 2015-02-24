@@ -83,7 +83,10 @@ Sets the value of the `ROUTE_FILTER` setting in
 
 ## Class `shorewall::simple`
 
-This class is wrapper around the more complicated and flexible `shorewall` class. It is designed to handle the special case of a system with just two zones, the local system and everything else. The class automatically declares all interfaces and allows specific ports to be opened to outside traffic.
+This class is wrapper around the more complicated and flexible `shorewall`
+class. It is designed to handle the special case of a system with just two
+zones, the local system and everything else. The class automatically declares
+all interfaces and allows specific ports to be opened to outside traffic.
 
 ### Parameters
 
@@ -111,26 +114,71 @@ for IPv6. Default: `false`
 
 #### `default_policy` (string)
 
-Sets the disposition for packets that do not match a rule for an open port. Must be one of `DROP`, `REJECT`, or `ACCEPT`. Default: `REJECT`
+Sets the disposition for packets that do not match a rule for an open port.
+Must be one of `DROP`, `REJECT`, or `ACCEPT`. Default: `REJECT`
 
 #### `open_tcp_ports` (integer array)
 
-An array of the TCP port numbers that will be open to incoming traffic. Default: `[ '22' ]`
+An array of the TCP port numbers that will be open to incoming traffic.
+Default: `[ '22' ]`
 
 #### `open_udp_ports` (integer array)
 
-An array of the UDP port numbers that will be open to incoming traffic. Default: `[]`
+An array of the UDP port numbers that will be open to incoming traffic.
+Default: `[]`
 
 Defines
 -------
 
 ## Define `shorewall::blacklist`
 
+This is a mechanism for declaring entries in either the Shorewall `blacklist`
+file or the `blrules`file (as appropriate depending on Shorewall version). See
+[Shorewall's
+documentation](http://shorewall.net/manpages/shorewall-blacklist.html) for
+details.
+
 ### Parameters
+
+#### `name`
+
+The name given to the declaration is unused in the define or its templates, and
+subject only to the uniqueness requirements of the Puppet catalog.
+
+#### `type`
+
+Controls whether the declaration affects the IPv4 or IPv6 firewall. Valid
+values are `ipv4` and `ipv6`. Default: `ipv4`
+
+#### `address`
+
+Sets the address of the blacklist entry. Valid values are IP addresses and
+prefixes in CIDR notation. Required.
+
+#### `proto`
+
+Sets the protocol of the blacklist entry. Valid values are IP protocol numbers
+or names listed in `/etc/protocols`. Required.
+
+#### `port`
+
+Sets the port number(s) of the blacklist entry. This may be specified only if
+the protocol is one of TCP (6), or UDP (17), and must be a valid TCP or UDP
+port number.
+
+#### `order`
+
+Controls the ordering of entries in the blacklist file. Entries with higher
+`order` will appear earlier than entries with lower `order`. Default: `'50'`
 
 ## Define `shorewall::config`
 
-### Parameters
+Controls an individual value in
+[shorewall.conf](http://shorewall.net/manpages/shorewall.conf.html). The
+`shorewall` class uses this define internally to declare several values. If you
+need support for controlling additional values, please submit a pull request or
+an issue so that they may be controlled through parameters of the `shorewall`
+class.
 
 ## Define `shorewall::host`
 
