@@ -11,9 +11,6 @@ define shorewall::blacklist (
     $order         = '50',
 ) {
     validate_re($proto, '^([0-9]+|tcp|udp|-)$')
-        if ($port != '') {
-        validate_re($port, '^([0-9]+|-)$')
-    }
 
     if $type != 'ipv6' and $::shorewall::ipv4 {
         if ($::shorewall_version < 40425) {
