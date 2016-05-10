@@ -1,1 +1,1 @@
-DROP    all:<%= @address %>     all    <%= @proto %>    <%= @port.empty? ? '' : " #{@port}" %>
+<%= @action %>    <%= @source %>:<%= @address %>     <%= @dest %>   <%= @proto %>    <%= @port.empty? ? '' : " #{Array(@port).join(',')}" %>
