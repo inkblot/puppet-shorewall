@@ -37,7 +37,7 @@ class shorewall (
             source => 'puppet:///modules/shorewall/etc/default/shorewall',
         }
 
-        if ($::shorewall_version < 40425) {
+        if ($::shorewall_version < '40425') {
             $blacklist_filename = 'blacklist'
         } else {
             $blacklist_filename = 'blrules'
@@ -214,7 +214,7 @@ class shorewall (
             source => 'puppet:///modules/shorewall/etc/default/shorewall6',
         }
 
-        if ($::shorewall6_version < 40425) {
+        if ($::shorewall6_version < '40425') {
             $blacklist6_filename = 'blacklist'
         } else {
             $blacklist6_filename = 'blrules'
@@ -277,7 +277,7 @@ class shorewall (
         concat::fragment { "${blacklist6_filename}-ipv6-preamble":
             order   => '00',
             target  => "/etc/shorewall6/${blacklist6_filename}",
-            source  => "puppet:///modules/shorewall/${blacklist6_filename}_header",
+            source  => "puppet:///modules/shorewall/${blacklist_filename}_header",
         }
 
         # ipv6 tunnels
