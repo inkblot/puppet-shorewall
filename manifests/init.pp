@@ -22,6 +22,12 @@ class shorewall (
         mode   => '0644',
     }
 
+    if versioncmp($::shorewall_version, '4.6') >= 0 {
+      $header_lead = '?'
+    } else {
+      $header_lead = ''
+    }
+
     if $ipv4 {
         package { 'shorewall':
             ensure => latest,
@@ -37,7 +43,7 @@ class shorewall (
             source => 'puppet:///modules/shorewall/etc/default/shorewall',
         }
 
-        if ($::shorewall_version < '40425') {
+        if versioncmp($::shorewall_version, '4.4.25') < 0 {
             $blacklist_filename = 'blacklist'
         } else {
             $blacklist_filename = 'blrules'
@@ -214,7 +220,7 @@ class shorewall (
             source => 'puppet:///modules/shorewall/etc/default/shorewall6',
         }
 
-        if ($::shorewall6_version < '40425') {
+        if versioncmp($::shorewall6_version, '4.4.25') < 0 {
             $blacklist6_filename = 'blacklist'
         } else {
             $blacklist6_filename = 'blrules'
