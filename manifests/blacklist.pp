@@ -13,7 +13,7 @@ define shorewall::blacklist (
     validate_re($proto, '^([0-9]+|tcp|udp|-)$')
 
     if $type != 'ipv6' and $::shorewall::ipv4 {
-        if ($::shorewall_version < 40425) {
+        if versioncmp($::shorewall_version, '4.4.25') < 0 {
             $blacklist_filename = 'blacklist'
         } else {
             $blacklist_filename = 'blrules'
@@ -27,7 +27,7 @@ define shorewall::blacklist (
     }
 
     if $type != 'ipv4' and $::shorewall::ipv6 {
-        if ($::shorewall6_version < 40425) {
+        if versioncmp($::shorewall6_version, '4.4.25') < 0 {
             $blacklist6_filename = 'blacklist'
         } else {
             $blacklist6_filename = 'blrules'
