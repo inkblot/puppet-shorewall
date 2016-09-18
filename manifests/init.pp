@@ -12,6 +12,7 @@ class shorewall (
     $maclist_disposition = 'REJECT',
     $log_martians        = true,
     $route_filter        = true,
+    $default_zone_entry  = "local firewall\n",
     $blacklist           = ["NEW","INVALID","UNTRACKED"]
 ) {
 
@@ -75,7 +76,7 @@ class shorewall (
         concat::fragment { 'shorewall-zones-local':
             order   => '01',
             target  => '/etc/shorewall/zones',
-            content => "local firewall\n",
+            content => $default_zone_entry,
         }
 
         # ipv4 interfaces
