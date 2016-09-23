@@ -184,14 +184,15 @@ class { 'shorewall::simple':
 Add a new interface to the firewall
 
 ```puppet
-shorewall::simple::iface { 'eth0': }
+shorewall::simple::iface { 'eth0':
+}
 ```
 
 Allow inbound tcp/80.
 
 ```puppet
 shorewall::simple::port { '80':
-   proto => 'tcp',
+  proto => 'tcp',
 }
 ```
 
@@ -199,7 +200,7 @@ Allow encapsulated ipsec traffic from/to 1.2.3.4/32.
 
 ```puppet
 shorewall::simple::tunnel { 'office-vpn':
-   proto   => 'ipv4',
-   type    => 'ipsec',
-   gateway => '1.2.3.4/32'
+  proto   => 'ipv4',
+  type    => 'ipsec',
+  gateway => '1.2.3.4/32'
 }
