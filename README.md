@@ -159,11 +159,6 @@ TBD
 ### Routestopped
 TBD
 
-## Dependencies
-
-* puppetlabs/concat
-* puppetlabs/stdlib
-
 ## Simple
 
 shorewall::simple is for systems that have simple firewalling needs, namely, one or more public interfaces with holes in it for the relevant services, which does not forward between the interfaces, and which does not treat the various networks to which it is connected differently.
@@ -204,3 +199,18 @@ shorewall::simple::tunnel { 'office-vpn':
   type    => 'ipsec',
   gateway => '1.2.3.4/32'
 }
+
+### Facts
+
+#### `shorewall_version`
+
+Determines the Shorewall version by parsing the output from `shorewall version`. Returns 0 if not installed or the command fails.
+
+#### `shorewall6_version`
+
+Determines the Shorewall version by parsing the output from `shorewall6 version`. Returns 0 if not installed or the command fails.
+
+## Dependencies
+
+* puppetlabs/concat
+* puppetlabs/stdlib
