@@ -199,6 +199,7 @@ shorewall::simple::tunnel { 'office-vpn':
   type    => 'ipsec',
   gateway => '1.2.3.4/32'
 }
+```
 
 ### Facts
 
