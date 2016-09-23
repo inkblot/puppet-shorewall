@@ -4,7 +4,6 @@
 
 The shorewall module installs, configures and manages Shorewall firewalls. It supports both management of IPv4 as well as IPv6 rules.
 
-
 ## Example
 
 ```puppet
@@ -160,5 +159,47 @@ TBD
 ### Routestopped
 TBD
 
+## Dependencies
+
+* puppetlabs/concat
+* puppetlabs/stdlib
+
 ## Simple
-TBD
+
+shorewall::simple is for systems that have simple firewalling needs, namely, one or more public interfaces with holes in it for the relevant services, which does not forward between the interfaces, and which does not treat the various networks to which it is connected differently.
+
+```puppet
+class { 'shorewall::simple':
+    ipv4           => true,
+    ipv6           => false,
+    inet           => 'inet',
+    ipv4_tunnels   => false,
+    ipv6_tunnels   => false,
+    default_policy => 'REJECT',
+    open_tcp_ports => [ '22' ],
+    open_udp_ports => [],
+}
+```
+
+Add a new interface to the firewall
+
+```puppet
+shorewall::simple::iface { 'eth0': }
+```
+
+Allow inbound tcp/80.
+
+```puppet
+shorewall::simple::port { '80':
+   proto => 'tcp',
+}
+```
+
+Allow encapsulated ipsec traffic from/to 1.2.3.4/32.
+
+```puppet
+shorewall::simple::tunnel { 'office-vpn':
+   proto   => 'ipv4',
+   type    => 'ipsec',
+   gateway => '1.2.3.4/32'
+}
