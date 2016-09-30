@@ -337,10 +337,10 @@ class shorewall (
     }
 
     shorewall::config {"IP_FORWARDING":
-        value => $ip_forwarding ? { true => "Yes", false => "No" },
+        value => $ip_forwarding ? { true => "Yes", false => "No", 'keep' => "Keep" },
     }
     shorewall::config {"LOG_MARTIANS":
-        value => $log_martians ? { true => "Yes", false => "No" },
+        value => $log_martians ? { true => "Yes", false => "No", 'keep' => "Keep" },
     }
     shorewall::config {"MACLIST_TTL":
         value => $maclist_ttl,
@@ -352,7 +352,7 @@ class shorewall (
         value => $traffic_control ? { true => "Simple", false => "Internal" },
     }
     shorewall::config {"ROUTE_FILTER":
-        value => $route_filter ? { true => "Yes", false => "No" },
-        ipv6 => false,
+        value => $route_filter ? { true => "Yes", false => "No", 'keep' => "Keep" },
+        ipv6  => false,
     }
 }
