@@ -1,0 +1,11 @@
+# This file is managed by Puppet 4
+#
+# Shorewall version 4 - conntrack File
+#
+# For information about entries in this file, type "man shorewall-conntrack"
+#
+##############################################################################################################
+?FORMAT 3
+#ACTION                 SOURCE          DESTINATION     PROTO   DEST            SOURCE  USER/           SWITCH
+#                                                               PORT(S)         PORT(S) GROUP
+CT:notrack:PO - ::1
