@@ -1,0 +1,11 @@
+---
+version: 4
+datadir: data
+hierarchy:
+  - name: "Platform"
+    backend: yaml
+    paths:
+      - "os/%{facts.os.family}/%{facts.os.name}/%{facts.os.distro.codename}"
+      - "os/%{facts.os.family}/%{facts.os.name}"
+      - "os/%{facts.os.family}"
+      - "common"

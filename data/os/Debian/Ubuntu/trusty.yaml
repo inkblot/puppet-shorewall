@@ -1,0 +1,3 @@
+---
+shorewall::defaults::header_lead: ''
+shorewall::defaults::mangle_filename: 'tcrules'

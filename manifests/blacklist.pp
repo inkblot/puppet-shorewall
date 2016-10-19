@@ -12,13 +12,11 @@ define shorewall::blacklist (
 ) {
     validate_re($proto, '^([0-9]+|tcp|udp|-)$')
 
-    if $type != 'ipv6' and $::shorewall::ipv4 {
-        if versioncmp($::shorewall_version, '4.4.25') < 0 {
-            $blacklist_filename = 'blacklist'
-        } else {
-            $blacklist_filename = 'blrules'
-        }
+    include shorewall::defaults
 
+    $blacklist_filename = $::shorewall::defaults::blacklist_filename
+
+    if $type != 'ipv6' and $::shorewall::ipv4 {
         concat::fragment { "${blacklist_filename}-ipv4-${name}":
             order   => $order,
             target  => "/etc/shorewall/${blacklist_filename}",
@@ -27,16 +25,10 @@ define shorewall::blacklist (
     }
 
     if $type != 'ipv4' and $::shorewall::ipv6 {
-        if versioncmp($::shorewall6_version, '4.4.25') < 0 {
-            $blacklist6_filename = 'blacklist'
-        } else {
-            $blacklist6_filename = 'blrules'
-        }
-
-        concat::fragment { "${blacklist6_filename}-ipv6-${name}":
+        concat::fragment { "${blacklist_filename}-ipv6-${name}":
             order   => $order,
-            target  => "/etc/shorewall6/${blacklist6_filename}",
-            content => template("shorewall/${blacklist6_filename}.erb"),
+            target  => "/etc/shorewall6/${blacklist_filename}",
+            content => template("shorewall/${blacklist_filename}.erb"),
         }
     }
 }

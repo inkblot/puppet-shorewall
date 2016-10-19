@@ -16,17 +16,17 @@ class shorewall (
     $blacklist           = ["NEW","INVALID","UNTRACKED"]
 ) {
 
+    include shorewall::defaults
+
+    $blacklist_filename = $::shorewall::defaults::blacklist_filename
+    $header_lead = $::shorewall::defaults::header_lead
+    $mangle_filename = $::shorewall::defaults::mangle_filename
+
     File {
         ensure => present,
         owner  => 'root',
         group  => 'root',
         mode   => '0644',
-    }
-
-    if versioncmp($::shorewall_version, '4.6') >= 0 {
-      $header_lead = '?'
-    } else {
-      $header_lead = ''
     }
 
     if $ipv4 {
@@ -44,12 +44,6 @@ class shorewall (
             source => 'puppet:///modules/shorewall/etc/default/shorewall',
         }
 
-        if versioncmp($::shorewall_version, '4.4.25') < 0 {
-            $blacklist_filename = 'blacklist'
-        } else {
-            $blacklist_filename = 'blrules'
-        }
-
         concat { [
                 '/etc/shorewall/zones',
                 '/etc/shorewall/interfaces',
@@ -59,7 +53,7 @@ class shorewall (
                 '/etc/shorewall/masq',
                 '/etc/shorewall/proxyarp',
                 '/etc/shorewall/hosts',
-                '/etc/shorewall/tcrules',
+                "/etc/shorewall/${mangle_filename}",
                 '/etc/shorewall/routestopped',
                 '/etc/shorewall/conntrack',
             ]:
@@ -156,9 +150,9 @@ class shorewall (
         }
 
         # ipv4 tc rules
-        concat::fragment { 'tcrules-preamble':
+        concat::fragment { "${mangle_filename}-preamble":
             order   => '00',
-            target  => '/etc/shorewall/tcrules',
+            target  => "/etc/shorewall/${mangle_filename}",
             content => "# This file is managed by puppet\n# Changes will be lost\n",
         }
 
@@ -229,18 +223,12 @@ class shorewall (
             source => 'puppet:///modules/shorewall/etc/default/shorewall6',
         }
 
-        if versioncmp($::shorewall6_version, '4.4.25') < 0 {
-            $blacklist6_filename = 'blacklist'
-        } else {
-            $blacklist6_filename = 'blrules'
-        }
-
         concat { [
                 '/etc/shorewall6/zones',
                 '/etc/shorewall6/interfaces',
                 '/etc/shorewall6/policy',
                 '/etc/shorewall6/rules',
-                "/etc/shorewall6/${blacklist6_filename}",
+                "/etc/shorewall6/${blacklist_filename}",
                 '/etc/shorewall6/routestopped',
                 '/etc/shorewall6/conntrack',
             ]:
@@ -290,9 +278,9 @@ class shorewall (
         }
 
         # ipv6 blacklist
-        concat::fragment { "${blacklist6_filename}-ipv6-preamble":
+        concat::fragment { "${blacklist_filename}-ipv6-preamble":
             order   => '00',
-            target  => "/etc/shorewall6/${blacklist6_filename}",
+            target  => "/etc/shorewall6/${blacklist_filename}",
             source  => "puppet:///modules/shorewall/${blacklist_filename}_header",
         }
 
