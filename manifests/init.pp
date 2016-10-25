@@ -39,9 +39,12 @@ class shorewall (
             require => Package['shorewall'],
         }
 
-        file { '/etc/default/shorewall':
-            mode   => '0644',
-            source => 'puppet:///modules/shorewall/etc/default/shorewall',
+        augeas { 'shorewall-default-startup':
+            changes => "set /files/etc/default/shorewall/startup '1'",
+            lens    => 'Shellvars.lns',
+            incl    => '/etc/defaults/shorewall',
+            require => Package['shorewall'],
+            notify  => Service['shorewall'],
         }
 
         concat { [
@@ -218,9 +221,13 @@ class shorewall (
             require => Package['shorewall6'],
         }
 
-        file { '/etc/default/shorewall6':
-            mode   => '0644',
-            source => 'puppet:///modules/shorewall/etc/default/shorewall6',
+
+        augeas { 'shorewall6-default-startup':
+            changes => "set /files/etc/default/shorewall6/startup '1'",
+            lens    => 'Shellvars.lns',
+            incl    => '/etc/defaults/shorewall6',
+            require => Package['shorewall6'],
+            notify  => Service['shorewall6'],
         }
 
         concat { [
