@@ -1,0 +1,4 @@
+---
+shorewall::defaults::blacklist_filename: 'blacklist'
+shorewall::defaults::header_lead: ''
+shorewall::defaults::mangle_filename: 'tcrules'

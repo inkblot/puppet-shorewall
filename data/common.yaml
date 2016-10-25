@@ -1,0 +1,4 @@
+---
+shorewall::defaults::blacklist_filename: 'blrules'
+shorewall::defaults::header_lead: '?'
+shorewall::defaults::mangle_filename: 'mangle'

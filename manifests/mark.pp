@@ -5,12 +5,25 @@ define shorewall::mark (
     $source,
     $dest,
     $proto,
+    $chain    = '',
     $port     = '-',
     $priority = '10',
 ) {
-    concat::fragment { "mark-${source}-${dest}-${proto}-${port}":
-        order   => $priority,
-        target  => '/etc/shorewall/tcrules',
-        content => "${value} ${source} ${dest} ${proto} ${port}\n",
+    include shorewall::defaults
+    $mangle_filename = $::shorewall::defaults::mangle_filename
+
+    $action = $mangle_filename ? {
+        "tcrules" => $value,
+        "mangle"  => "MARK(${value})"
+    }
+
+    shorewall::mangle { "mark-${source}-${dest}-${proto}-${port}":
+        action   => $action,
+        source   => $source,
+        dest     => $dest,
+        proto    => $proto,
+        chain    => $chain,
+        port     => $port,
+        priority => $priority,
     }
 }
