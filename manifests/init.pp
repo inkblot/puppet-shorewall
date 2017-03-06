@@ -59,6 +59,7 @@ class shorewall (
                 "/etc/shorewall/${mangle_filename}",
                 '/etc/shorewall/routestopped',
                 '/etc/shorewall/conntrack',
+                '/etc/shorewall/params',
             ]:
             mode   => '0644',
             notify => Service['shorewall'],
@@ -173,6 +174,13 @@ class shorewall (
             source => 'puppet:///modules/shorewall/conntrack_header',
         }
 
+        # ipv4 params
+        concat::fragment { 'params-header':
+          order   => '00',
+          target  => '/etc/shorewall/params',
+          content => "# This file is managed by puppet\n# Changes will be lost\n",
+        }
+
         if $traffic_control {
             concat { [
                     '/etc/shorewall/tcinterfaces',
@@ -238,6 +246,7 @@ class shorewall (
                 "/etc/shorewall6/${blacklist_filename}",
                 '/etc/shorewall6/routestopped',
                 '/etc/shorewall6/conntrack',
+                '/etc/shorewall6/params',
             ]:
             mode   => '0644',
             notify => Service['shorewall6'],
@@ -322,6 +331,12 @@ class shorewall (
             order   => '00',
             target  => '/etc/shorewall6/conntrack',
             source  => 'puppet:///modules/shorewall/conntrack6_header',
+        }
+        # ipv6 params
+        concat::fragment { 'params6-header':
+          order   => '00',
+          target  => '/etc/shorewall6/params',
+          content => "# This file is managed by puppet\n# Changes will be lost\n",
         }
 
         service { 'shorewall6':
