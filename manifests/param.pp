@@ -1,22 +1,26 @@
 define shorewall::param (
   $value,
   $proto = 'ipv4',
-  ) {
+) {
 
-    validate_string($value)
+  validate_string($value)
 
-    case $proto {
-      'ipv4': {
-        concat::fragment { "shorewall-param-ipv4-${name}":
-          target  => '/etc/shorewall/params',
-          content => template('shorewall/param.erb'),
-        }
+  case $proto {
+    'ipv4': {
+      augeas { "shorewall-param-${name}":
+        changes => "set /files/etc/shorewall/params/${name} ${value}",
+        lens    => 'Shellvars.lns',
+        incl    => '/etc/shorewall/params',
+        require => Package['shorewall'],
       }
-      'ipv6': {
-        concat::fragment { "shorewall-param-ipv6-${name}":
-          target  => '/etc/shorewall6/params',
-          content => template('shorewall/param.erb'),
-        }
+    }
+    'ipv6': {
+      augeas { "shorewall6-param-${name}":
+        changes => "set /files/etc/shorewall6/params/${name} ${value}",
+        lens    => 'Shellvars.lns',
+        incl    => '/etc/shorewall6/params',
+        require => Package['shorewall6'],
       }
     }
   }
+}
