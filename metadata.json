@@ -1,6 +1,6 @@
 {
   "name": "inkblot/shorewall",
-  "version": "5.0.1",
+  "version": "5.0.2",
   "author": "inkblot",
   "license": "Apache-2.0",
   "summary": "Shorewall Firewall",
@@ -11,7 +11,7 @@
   "operatingsystem_support": [
     {
       "operatingsystem": "Debian",
-      "operatingsystemrelease": [ "7.7" ]
+      "operatingsystemrelease": [ "7", "8" ]
     },
     {
       "operatingsystem": "Ubuntu",
