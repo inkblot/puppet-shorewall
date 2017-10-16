@@ -323,7 +323,6 @@ class shorewall (
             target  => '/etc/shorewall6/conntrack',
             source  => 'puppet:///modules/shorewall/conntrack6_header',
         }
-
         service { 'shorewall6':
             ensure     => running,
             hasrestart => true,
