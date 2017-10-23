@@ -59,14 +59,14 @@ Register a interface with a firewall zone or apply traffic shaping rules.
 ```puppet
 shorewall::iface { 'eth0':
   interface     => 'eth0',    # Optional defaults to $name
-  zone          => 'net'      # Name of the zone the interface gets assigned to
+  zone          => 'net',     # Name of the zone the interface gets assigned to
   proto         => 'ipv4',    # 'ipv4' or 'ipv6'
-  options       = [],         # Any of the values mentioned under options shorewall doc
+  options       => [],         # Any of the values mentioned under options shorewall doc
 
   # Options for tcinterfaces
-  type          = 'External', # See tcinterfaces
-  in_bandwidth  = '-',        # Incoming traffic shaping
-  out_bandwidth = false,      # Outgoing traffic shaping
+  type          => 'External', # See tcinterfaces
+  in_bandwidth  => '-',        # Incoming traffic shaping
+  out_bandwidth => false,      # Outgoing traffic shaping
 }
 ```
 
@@ -82,10 +82,10 @@ shorewall::zone { 'net':
   zone         => 'net',  # Optional, otherwise use $name
   parent_zones => [],     # List parent zones
   type         => 'ipv4', # See shorewall-zones type documentation (ipv4,ipv6,ipsec,firewall,loopback,..)
-  options      = '-',     # See shorewall-zones options documentation
-  in_options   = '-',     # See shorewall-zones options documentation
-  out_options  = '-',     # See shorewall-zones options documentation
-  order        = '50'
+  options      => '-',     # See shorewall-zones options documentation
+  in_options   => '-',     # See shorewall-zones options documentation
+  out_options  => '-',     # See shorewall-zones options documentation
+  order        => '50'
 }
 ```
 
@@ -171,7 +171,7 @@ class { 'shorewall::simple':
     ipv4_tunnels   => false,
     ipv6_tunnels   => false,
     default_policy => 'REJECT',
-    open_tcp_ports => [ '22' ],
+    open_tcp_ports => ['22'],
     open_udp_ports => [],
 }
 ```
