@@ -13,10 +13,14 @@ class shorewall (
     $log_martians        = true,
     $route_filter        = true,
     $default_zone_entry  = "local firewall\n",
-    $blacklist           = ["NEW","INVALID","UNTRACKED"]
+    $blacklist           = ["NEW","INVALID","UNTRACKED"],
+    $config_test         = false,
+    $service_restart     = '/usr/sbin/shorewall check && /bin/systemctl restart shorewall',
+    $service6_restart    = '/usr/sbin/shorewall6 check && /bin/systemctl restart shorewall6',
 ) {
 
     include shorewall::defaults
+
 
     $blacklist_filename = $::shorewall::defaults::blacklist_filename
     $header_lead = $::shorewall::defaults::header_lead
@@ -209,6 +213,12 @@ class shorewall (
             hasrestart => true,
             hasstatus  => true,
         }
+
+        if $config_test {
+          Service['shorewall'] {
+            restart => $service_restart,
+          }
+        }
     }
 
     if $ipv6 {
@@ -327,6 +337,11 @@ class shorewall (
             ensure     => running,
             hasrestart => true,
             hasstatus  => true,
+        }
+        if $config_test {
+          Service['shorewall6'] {
+            restart => $service6_restart,
+          }
         }
     }
 
