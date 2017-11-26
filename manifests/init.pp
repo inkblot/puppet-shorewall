@@ -263,7 +263,7 @@ class shorewall (
         concat::fragment { 'shorewall6-zones-local':
             order   => '01',
             target  => '/etc/shorewall6/zones',
-            content => "local firewall\n",
+            content => $default_zone_entry,
         }
 
         # ipv6 interfaces
