@@ -20,5 +20,6 @@ class shorewall::params {
     default: {
       $service_restart  = '/usr/sbin/shorewall check && /bin/systemctl restart shorewall'
       $service6_restart = '/usr/sbin/shorewall6 check && /bin/systemctl restart shorewall6'
+    }
   }
 }
