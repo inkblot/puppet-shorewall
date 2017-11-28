@@ -14,13 +14,12 @@ class shorewall (
     $route_filter        = true,
     $default_zone_entry  = "local firewall\n",
     $blacklist           = ["NEW","INVALID","UNTRACKED"],
-    $config_test         = false,
-    $service_restart     = '/usr/sbin/shorewall check && /bin/systemctl restart shorewall',
-    $service6_restart    = '/usr/sbin/shorewall6 check && /bin/systemctl restart shorewall6',
-) {
+    $config_test         = $shorewall::params::config_test,
+    $service_restart     = $shorewall::params::service_restart,
+    $service6_restart    = $shorewall::params::servive6_restart,
+) inherits shorewall::params {
 
     include shorewall::defaults
-
 
     $blacklist_filename = $::shorewall::defaults::blacklist_filename
     $header_lead = $::shorewall::defaults::header_lead
