@@ -23,7 +23,7 @@ class shorewall (
     $header_lead = $::shorewall::defaults::header_lead
     $mangle_filename = $::shorewall::defaults::mangle_filename
     $service_restart = $shorewall::defaults::service_restart
-    $service6_restart = $shorewall::defaults::servive6_restart
+    $service6_restart = $shorewall::defaults::service6_restart
 
     File {
         ensure => present,
