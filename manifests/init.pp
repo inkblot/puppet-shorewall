@@ -14,9 +14,7 @@ class shorewall (
     $route_filter        = true,
     $default_zone_entry  = "local firewall\n",
     $blacklist           = ["NEW","INVALID","UNTRACKED"],
-    $config_test         = $shorewall::params::config_test,
-    $service_restart     = $shorewall::params::service_restart,
-    $service6_restart    = $shorewall::params::servive6_restart,
+    $config_test         = false,
 ) inherits shorewall::params {
 
     include shorewall::defaults
@@ -24,6 +22,8 @@ class shorewall (
     $blacklist_filename = $::shorewall::defaults::blacklist_filename
     $header_lead = $::shorewall::defaults::header_lead
     $mangle_filename = $::shorewall::defaults::mangle_filename
+    $service_restart = $shorewall::defaults::service_restart
+    $service6_restart = $shorewall::defaults::servive6_restart
 
     File {
         ensure => present,
