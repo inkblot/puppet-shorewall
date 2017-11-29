@@ -15,7 +15,7 @@ class shorewall (
     $default_zone_entry  = "local firewall\n",
     $blacklist           = ["NEW","INVALID","UNTRACKED"],
     $config_test         = false,
-) inherits shorewall::params {
+) {
 
     include shorewall::defaults
 
