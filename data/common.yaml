@@ -2,3 +2,5 @@
 shorewall::defaults::blacklist_filename: 'blrules'
 shorewall::defaults::header_lead: '?'
 shorewall::defaults::mangle_filename: 'mangle'
+shorewall::defaults::service_restart: '/usr/sbin/shorewall check && /bin/systemctl restart shorewall'
+shorewall::defaults::service6_restart: '/usr/sbin/shorewall6 check && /bin/systemctl restart shorewall6'

@@ -4,5 +4,7 @@ class shorewall::defaults (
   $blacklist_filename,
   $header_lead,
   $mangle_filename,
+  $service_restart,
+  $service6_restart,
 ) {
 }

@@ -1,0 +1,3 @@
+---
+shorewall::defaults::service_restart: '/sbin/service shorewall restart'
+shorewall::defaults::service6_restart: '/sbin/service shorewall6 restart'
