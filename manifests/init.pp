@@ -254,6 +254,7 @@ class shorewall (
                 '/etc/shorewall6/policy',
                 '/etc/shorewall6/rules',
                 "/etc/shorewall6/${blacklist_filename}",
+                '/etc/shorewall6/hosts',
                 '/etc/shorewall6/routestopped',
                 '/etc/shorewall6/conntrack',
                 '/etc/shorewall6/stoppedrules',
